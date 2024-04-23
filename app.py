@@ -9,12 +9,15 @@ def git_update():
   repo.create_head('main', origin.refs.main).set_tracking_branch(origin.refs.main).checkout()
   origin.pull()
   return ""
+# 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
+
+# https://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@github.com/TobiasRoland123/mysite.git
  
  
 ##############################
 @get("/")
 def _():
-  return "One"
+  return "Two"
  
 ##############################
 try:
