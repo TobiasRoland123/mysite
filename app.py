@@ -17,7 +17,7 @@ def git_update():
 ##############################
 @get("/")
 def _():
-  return "new req"
+  return "added x.py"
  
 ##############################
 try:
