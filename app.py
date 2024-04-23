@@ -17,7 +17,7 @@ def git_update():
 ##############################
 @get("/")
 def _():
-  return "test"
+  return "new req"
  
 ##############################
 try:
