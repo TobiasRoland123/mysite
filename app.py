@@ -1,6 +1,6 @@
 #########################
 from bottle import default_app, get, post, response, run, static_file, template, request
-import git
+# import git
 import x
 import bcrypt
 import json
@@ -279,8 +279,7 @@ def _():
  
 ##############################
 try:
-  import production
-  application = default_app()
-except Exception as ex:
-  print("Running local server")
-  run(host="127.0.0.1", port=80, debug=True, reloader=True)
+    import production
+    application = default_app()
+except:
+    run(host="0.0.0.0", port=80, debug=True, reloader=True, interval=0)

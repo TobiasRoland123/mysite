@@ -630,10 +630,6 @@ video {
   margin-top: 0.5rem;
 }
 
-.mt-16 {
-  margin-top: 4rem;
-}
-
 .block {
   display: block;
 }
@@ -710,10 +706,6 @@ video {
   grid-template-columns: 1fr 20fr 5fr;
 }
 
-.grid-cols-\[1fr_1fr\] {
-  grid-template-columns: 1fr 1fr;
-}
-
 .flex-col {
   flex-direction: column;
 }
@@ -780,10 +772,6 @@ video {
 .object-cover {
   -o-object-fit: cover;
      object-fit: cover;
-}
-
-.p-4 {
-  padding: 1rem;
 }
 
 .px-2 {
