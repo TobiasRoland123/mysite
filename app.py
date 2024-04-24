@@ -20,7 +20,7 @@ def git_update():
 ##############################
 @get("/")
 def _():
-  return " re removed icecream"
+  return " test"
  
 ##############################
 try:
