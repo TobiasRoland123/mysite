@@ -17,7 +17,7 @@ def git_update():
 ##############################
 @get("/")
 def _():
-  return "send email and readme added"
+  return "mixhtml and credentials added"
  
 ##############################
 try:
