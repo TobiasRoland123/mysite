@@ -17,7 +17,7 @@ def git_update():
 ##############################
 @get("/")
 def _():
-  return "views added"
+  return "images added"
  
 ##############################
 try:
