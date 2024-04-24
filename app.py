@@ -6,6 +6,30 @@ import bcrypt
 import json
 import credentials
 
+
+##############################
+@get("/app.css")
+def _():
+    return static_file("app.css", ".")
+
+
+##############################
+@get("/<file_name>.js")
+def _(file_name):
+    return static_file(file_name+".js", ".")
+
+##############################
+@get("/test")
+def _():
+    return [{"name":"one"}]
+
+
+
+##############################
+@get("/images/<item_splash_image>")
+def _(item_splash_image):
+    return static_file(item_splash_image, "images")
+
  
 @post('/secret_url_for_git_hook')
 def git_update():
@@ -22,7 +46,7 @@ def git_update():
 ##############################
 @get("/")
 def _():
-  return " import credentials"
+  return "import static imports"
  
 ##############################
 try:
