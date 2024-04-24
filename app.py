@@ -17,7 +17,7 @@ def git_update():
 ##############################
 @get("/")
 def _():
-  return "docker file added"
+  return "docker compose file added"
  
 ##############################
 try:
