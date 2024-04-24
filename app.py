@@ -1,6 +1,6 @@
 #########################
 from bottle import default_app, get, post, run
-import gi
+import git
  
 @post('/secret_url_for_git_hook')
 def git_update():
