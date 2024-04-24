@@ -4,6 +4,7 @@ import git
 import x
 import bcrypt
 import json
+import credentials
 
  
 @post('/secret_url_for_git_hook')
@@ -21,7 +22,7 @@ def git_update():
 ##############################
 @get("/")
 def _():
-  return " import json"
+  return " import credentials"
  
 ##############################
 try:
