@@ -1,6 +1,6 @@
 #########################
 from bottle import default_app, get, post, run
-import git
+import gi
  
 @post('/secret_url_for_git_hook')
 def git_update():
@@ -17,7 +17,7 @@ def git_update():
 ##############################
 @get("/")
 def _():
-  return "new imports removed again"
+  return "new imports removed againagain"
  
 ##############################
 try:
