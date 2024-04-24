@@ -17,7 +17,7 @@ def git_update():
 ##############################
 @get("/")
 def _():
-  return "updated git ignore"
+  return "tailwind css added"
  
 ##############################
 try:
