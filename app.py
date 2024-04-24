@@ -127,11 +127,11 @@ def _():
         q = db.execute("SELECT * FROM items ORDER BY item_created_at LIMIT 0, ?", (x.ITEMS_PER_PAGE,))
         # return "x"
         items = q.fetchall()
-        ic(items)
+        print(items)
         return template("profile.html", is_logged=True, items=items)
         
     except Exception as ex:
-        ic(ex)
+        print(ex)
         response.status = 303 
         response.set_header('Location', '/login')
         return
@@ -234,7 +234,7 @@ def _():
         if not user: raise Exception("user not found", 400)
         if not bcrypt.checkpw(user_password.encode(), user["user_password"].encode()): raise Exception("Invalid credentials", 400)
         user.pop("user_password") # Do not put the user's password in the cookie
-        ic(user)
+        print(user)
         try:
             import production
             is_cookie_https = True
@@ -261,7 +261,7 @@ def _():
             </template>
             """
         except Exception as ex:
-            ic(ex)
+            print(ex)
             response.status = 500
             return f"""
             <template mix-target="#toast">
