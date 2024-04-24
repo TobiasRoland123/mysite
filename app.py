@@ -17,7 +17,7 @@ def git_update():
 ##############################
 @get("/")
 def _():
-  return "added x.py"
+  return "docker file added"
  
 ##############################
 try:
