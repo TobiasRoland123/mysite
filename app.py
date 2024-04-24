@@ -17,7 +17,7 @@ def git_update():
 ##############################
 @get("/")
 def _():
-  return "bottle.py added added"
+  return "app.js added"
  
 ##############################
 try:
