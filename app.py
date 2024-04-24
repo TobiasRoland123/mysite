@@ -17,7 +17,7 @@ def git_update():
 ##############################
 @get("/")
 def _():
-  return "company sql and db added"
+  return "bottle.py added added"
  
 ##############################
 try:
