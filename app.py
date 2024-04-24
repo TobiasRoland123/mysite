@@ -110,6 +110,33 @@ def _(page_number):
     finally:
         if "db" in locals(): db.close()
 
+##############################
+@get("/login")
+def _():
+    x.no_cache()
+    return template("login.html")
+
+
+##############################
+@get("/profile")
+def _():
+    try:
+        x.no_cache()
+        x.validate_user_logged()
+        db=x.db()
+        q = db.execute("SELECT * FROM items ORDER BY item_created_at LIMIT 0, ?", (x.ITEMS_PER_PAGE,))
+        # return "x"
+        items = q.fetchall()
+        ic(items)
+        return template("profile.html", is_logged=True, items=items)
+        
+    except Exception as ex:
+        ic(ex)
+        response.status = 303 
+        response.set_header('Location', '/login')
+        return
+
+
 
  
 ##############################
