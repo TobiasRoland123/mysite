@@ -1,11 +1,6 @@
 #########################
+from bottle import default_app, get, post, run
 import git
-from bottle import default_app, get, post, response, run, static_file, template, request
-import x
-from icecream import ic
-import bcrypt
-import json
-import credentials
  
 @post('/secret_url_for_git_hook')
 def git_update():
@@ -22,7 +17,7 @@ def git_update():
 ##############################
 @get("/")
 def _():
-  return "new imports added added"
+  return "new imports removed"
  
 ##############################
 try:
