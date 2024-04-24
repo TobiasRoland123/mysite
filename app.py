@@ -137,6 +137,55 @@ def _():
         return
 
 
+##############################
+@post("/toogle_item_block")
+def _():
+    try:
+        item_id = request.forms.get("item_id", '')
+        return f"""
+        <template mix-target="[id='{item_id}']" mix-replace>
+
+            <form id="{item_id}">
+
+            <input name="item_id" type="text" value="{item_id}" class="hidden">
+             <button
+            mix-data="[id='{item_id}']"
+            mix-post="/toogle_item_unblock"
+             >
+            Unblock
+        </button>
+
+        </form>
+        </template>
+        """
+    except Exception as ex:
+        pass
+    finally:
+        if "db" in locals(): db.close()
+
+##############################
+@post("/toogle_item_unblock")
+def _():
+    try:
+        item_id = request.forms.get("item_id", '')
+        return f"""
+        <template mix-target="[id='{item_id}']" mix-replace>
+
+         <form id="{item_id}">
+            <input name="item_id" type="text" value="{item_id}" class="hidden">
+        <button
+            mix-data="[id='{item_id}']"
+            mix-post="/toogle_item_block"
+        >
+           Block
+        </button>
+         </form>
+        </template>
+        """
+    except Exception as ex:
+        pass
+    finally:
+        if "db" in locals(): db.close()
 
  
 ##############################
