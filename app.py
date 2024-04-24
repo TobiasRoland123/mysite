@@ -3,7 +3,7 @@ from bottle import default_app, get, post, response, run, static_file, template,
 import git
 import x
 import bcrypt
-
+import json
 
  
 @post('/secret_url_for_git_hook')
@@ -21,7 +21,7 @@ def git_update():
 ##############################
 @get("/")
 def _():
-  return " bxrypt inport"
+  return " import json"
  
 ##############################
 try:
