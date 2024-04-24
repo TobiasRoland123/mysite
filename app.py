@@ -17,7 +17,7 @@ def git_update():
 ##############################
 @get("/")
 def _():
-  return "tailwind css added"
+  return "app.css added"
  
 ##############################
 try:
