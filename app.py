@@ -17,7 +17,7 @@ def git_update():
 ##############################
 @get("/")
 def _():
-  return "mixhtml and credentials added"
+  return "company sql and db added"
  
 ##############################
 try:
