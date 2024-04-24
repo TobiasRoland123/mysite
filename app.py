@@ -17,7 +17,7 @@ def git_update():
 ##############################
 @get("/")
 def _():
-  return "docker compose file added"
+  return "send email and readme added"
  
 ##############################
 try:
