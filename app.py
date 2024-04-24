@@ -46,7 +46,25 @@ def git_update():
 ##############################
 @get("/")
 def _():
-  return "import static imports"
+    try:
+        db = x.db()
+        q = db.execute("SELECT * FROM items ORDER BY item_created_at LIMIT 0, ?", (x.ITEMS_PER_PAGE,))
+        # return "x"
+        items = q.fetchall()
+        ic(items)
+        is_logged = False
+
+        try:
+            x.validate_user_logged()
+            is_logged =True
+        except:
+            pass
+        return template("index.html", items=items, mapbox_token=credentials.mapbox_token, is_logged=is_logged)
+    except Exception as ex:
+        ic(ex)
+        return ex
+    finally:
+        if "db" in locals(): db.close()
  
 ##############################
 try:
