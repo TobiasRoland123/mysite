@@ -51,7 +51,7 @@ def _():
         q = db.execute("SELECT * FROM items ORDER BY item_created_at LIMIT 0, ?", (x.ITEMS_PER_PAGE,))
         # return "x"
         items = q.fetchall()
-        ic(items)
+        print(items)
         is_logged = False
 
         try:
@@ -61,7 +61,7 @@ def _():
             pass
         return template("index.html", items=items, mapbox_token=credentials.mapbox_token, is_logged=is_logged)
     except Exception as ex:
-        ic(ex)
+        print(ex)
         return ex
     finally:
         if "db" in locals(): db.close()
