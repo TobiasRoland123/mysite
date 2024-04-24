@@ -17,7 +17,7 @@ def git_update():
 ##############################
 @get("/")
 def _():
-  return "new imports ...."
+  return "new test"
  
 ##############################
 try:
