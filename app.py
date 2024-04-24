@@ -17,7 +17,7 @@ def git_update():
 ##############################
 @get("/")
 def _():
-  return "images added"
+  return "updated git ignore"
  
 ##############################
 try:
