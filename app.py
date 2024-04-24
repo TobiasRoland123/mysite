@@ -17,7 +17,7 @@ def git_update():
 ##############################
 @get("/")
 def _():
-  return "app.js added"
+  return "views added"
  
 ##############################
 try:
