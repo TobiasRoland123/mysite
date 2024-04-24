@@ -2,6 +2,7 @@
 from bottle import default_app, get, post, response, run, static_file, template, request
 import git
 import x
+import bcrypt
 
 
  
@@ -20,7 +21,7 @@ def git_update():
 ##############################
 @get("/")
 def _():
-  return " test"
+  return " bxrypt inport"
  
 ##############################
 try:
