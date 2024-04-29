@@ -1,8 +1,8 @@
 %include("_header", is_logged=is_logged)
 
-<main class="flex">
+<main class="flex flex-col md:flex-row">
     <div class="w-full h-full">
-        <div class="fixed w-[calc(50%-0.5rem)] h-[calc(100%-5rem)] bg-neutral-100">
+        <div class="md:fixed w-full  aspect-video md:w-[calc(50%-0.5rem)] md:h-[calc(100%-5rem)] p-2 md:p-0 bg-neutral-100">
             <div id='map' class="w-full h-full"></div>
             <script>
               mapboxgl.accessToken = "{{mapbox_token}}"
