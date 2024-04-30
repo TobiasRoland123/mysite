@@ -1,0 +1,54 @@
+%import x
+
+<form id="frm_signup" autocomplete="off" class="flex flex-col gap-2 w-full mx-4 md:w-1/2">
+
+
+        <fieldset>
+            <legend>Choose Your Role:</legend>
+            <div class="flex justify-around">
+                <div>
+                    <label for="user_role_customer">Im a customer</label>
+                    <input name="user_role" id="user_role_customer" class="w-full border" type="radio" placeholder="Role" value="customer" checked>
+                </div>
+                <div>
+                    <label for="user_role_partner">Im a partner</label>
+                    <input name="user_role" id="user_role_partner" class="w-full border" type="radio" placeholder="Role" value="partner">
+                </div>
+            </div>
+        </fieldset>
+
+
+        <div>
+                <label for="user_email">Email</label>
+                <input name="user_email" id="user_email" class="w-full border" type="text" placeholder="email" value="samu1493@stud.kea.dk" 
+                mix-check="{{x.EMAIL_REGEX}}">
+        </div>
+        <div>
+                 <label for="user_username">Username</label>
+                <input name="user_username" id="user_username" class="w-full border" type="text" placeholder="Username" value="testusername" mix-check="{{x.USER_USERNAME_REGEX}}">
+        </div>
+
+        <div>
+                 <label for="user_first_name">First Name</label>
+                <input name="user_first_name" class="w-full border" type="text" placeholder="First name" value="my firstname" 
+                mix-check="{{x.USER_USERNAME_REGEX}}">
+        </div>
+
+        <div>
+                <label for="user_last_name">Last Name</label>
+                <input name="user_last_name" id="user_last_name" class="w-full border" type="text" placeholder="Last name" value="some lastname" mix-check="{{x.USER_USERNAME_REGEX}}">
+        </div>
+        <div>
+                <label for="user_password">Password</label>
+                <input name="user_password" class="w-full border" type="password" placeholder="password" value="password"
+                    mix-check="{{x.USER_PASSWORD_REGEX}}">
+        </div>
+    <button class=""
+        mix-data="#frm_signup"
+        mix-post="/signup"
+        mix-default="Signup"
+        mix-await="Please wait ..."
+    >
+        Signup
+    </button>
+</form>

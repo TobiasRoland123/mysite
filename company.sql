@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE users(
     user_pk                 TEXT,
     user_username           TEXT,
-    user_name               TEXT,
+    user_first_name               TEXT,
     user_last_name          TEXT,
     user_email              TEXT UNIQUE,
     user_password           TEXT,
@@ -30,6 +30,8 @@ INSERT INTO users VALUES(
     1,
     0
 );
+
+SELECT * FROM users
 
 
 DROP TABLE IF EXISTS items;

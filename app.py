@@ -5,6 +5,7 @@ import x
 import bcrypt
 import json
 import credentials
+import uuid
 
 
 ##############################
@@ -204,22 +205,59 @@ def _():
 
 ##############################
 ##############################
+@get("/signup")
+def _():
+    try:
+        return template("signup.html")
+    except Exception as ex:
+        print(ex)
+    
+
+
 ##############################
 @post("/signup")
 def _():
-    # password = b'password'
-    # # Adding the salt to password
-    # salt = bcrypt.gensalt()
-    # # Hashing the password
-    # hashed = bcrypt.hashpw(password, salt)
-    # # printing the salt
-    # print("Salt :")
-    # print(salt)
+    try:
+
+        user_email = x.validate_email()
+        user_password = x.validate_password()
+        user_username = x.validate_user_username()
+        user_first_name = x.validate_user_first_name()
+        user_last_name = x.validate_user_last_name()
+        user_role = x.validate_user_role()
+        user_pk = str(uuid.uuid4())
+        
+
+        # # this makes user_password into a byte string
+        password = user_password.encode() 
     
-    # # printing the hashed
-    # print("Hashed")
-    # print(hashed)    
-    return "signup"
+        # # Adding the salt to password
+        salt = bcrypt.gensalt()
+        # # Hashing the password
+        hashed = bcrypt.hashpw(password, salt)
+        # # printing the salt
+        print("Salt :")
+        print(salt)
+        
+        # # printing the hashed
+        print("Hashed")
+        print(hashed)    
+
+
+
+
+        db = x.db()
+        q = db.execute("INSERT INTO users (user_pk, user_username, user_first_name, user_last_name, user_email, user_password, user_role, user_created_at, user_updated_at, user_is_verified, user_is_blocked) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_pk, user_username, user_first_name, user_last_name, user_email, hashed, user_role, "0", "0", "0", "0"))
+        db.commit()
+
+        x.send_verification_email('samueltobiasrolanduyet@gmail.com', user_email, user_pk)
+   
+        return "signup"
+    except Exception as ex:
+        print(ex)
+    finally:
+        if "db" in locals(): db.close()
+        
 
 
 ##############################

@@ -1,9 +1,12 @@
 import pathlib
 # import sys
 # sys.path.insert(0, str(pathlib.Path(__file__).parent.resolve())+"/bottle")
-from bottle import request, response
+from bottle import request, response, template
 import re
 import sqlite3
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import smtplib
 
 ITEMS_PER_PAGE = 2
 COOKIE_SECRET = "41ebeca46f3b-4d77-a8e2-554659075C6319a2fbfb-9a2D-4fb6-Afcad32abb26a5e0"
@@ -48,6 +51,38 @@ def validate_logged():
     return user_id
 
 
+
+##############################
+def send_verification_email(from_email, to_email, verification_id):
+    try:
+
+        message = MIMEMultipart()
+        message["To"] = from_email
+        message["From"] = to_email
+        message["Subject"] = 'Testing my email to verify'
+
+
+        email_body= template("views/emailTemplates/email_verify_link", key=verification_id)
+ 
+        messageText = MIMEText(email_body, 'html')
+        message.attach(messageText)
+ 
+        email = from_email
+        password = 'sxakvggwacukkdmk'
+ 
+        server = smtplib.SMTP('smtp.gmail.com:587')
+        server.ehlo('Gmail')
+        server.starttls()
+        server.login(email,password)
+        from_email = from_email
+        to_email  = to_email
+        server.sendmail(from_email,to_email,message.as_string())
+ 
+        server.quit()
+    except Exception as ex:
+        print(ex)
+        return "error"
+
 ##############################
 
 USER_ID_LEN = 32
@@ -87,19 +122,19 @@ def validate_user_username():
 
 USER_NAME_MIN = 2
 USER_NAME_MAX = 20
-USER_REGEX = "^.{2,20}$"
-def validate_user_name():
+
+def validate_user_first_name():
     error = f"name {USER_NAME_MIN} to {USER_NAME_MAX} characters"
-    user_name = request.forms.get("user_name", "").strip()
-    if not re.match(USER_USERNAME_REGEX, user_name): raise Exception(error, 400)
-    return request.forms.name
+    user_first_name = request.forms.get("user_first_name", "").strip()
+    if not re.match(USER_USERNAME_REGEX, user_first_name): raise Exception(error, 400)
+    return user_first_name
 
 ##############################
 
 LAST_NAME_MIN = 2
 LAST_NAME_MAX = 20
 
-def last_name():
+def validate_user_last_name():
   error = f"last_name {LAST_NAME_MIN} to {LAST_NAME_MAX} characters"
   user_last_name = request.forms.get("user_last_name").strip()
   if not re.match(USER_USERNAME_REGEX, user_last_name): raise Exception(error, 400)
@@ -116,6 +151,17 @@ def validate_password():
     user_password = request.forms.get("user_password", "").strip()
     if not re.match(USER_PASSWORD_REGEX, user_password): raise Exception(error, 400)
     return user_password
+
+##############################
+CUSTOMER_ROLE = "customer"
+PARTNER_ROLE = "partner"
+
+def validate_user_role():
+    user_role = request.forms.get("user_role", "").strip()
+    error = f"The role ###{user_role}### is neither {CUSTOMER_ROLE} or {PARTNER_ROLE}"
+    if user_role != CUSTOMER_ROLE and user_role != PARTNER_ROLE:
+        raise Exception(error, 400)
+    return user_role
 
 ##############################
 
