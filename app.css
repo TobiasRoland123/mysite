@@ -670,10 +670,6 @@ video {
   height: 12rem;
 }
 
-.h-\[calc\(100\%-5rem\)\] {
-  height: calc(100% - 5rem);
-}
-
 .h-full {
   height: 100%;
 }
@@ -688,10 +684,6 @@ video {
 
 .w-3 {
   width: 0.75rem;
-}
-
-.w-\[calc\(50\%-0\.5rem\)\] {
-  width: calc(50% - 0.5rem);
 }
 
 .w-full {
