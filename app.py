@@ -6,6 +6,7 @@ import bcrypt
 import json
 import credentials
 import uuid
+import requests
 
 
 ##############################
@@ -258,17 +259,36 @@ def _():
     finally:
         if "db" in locals(): db.close()
 
+
 ##############################
-@post("/activate_user/<id>")
+@get("/activate_user/<id>")
 def _(id):
     try:
         db = x.db()
         q = db.execute("UPDATE users SET user_is_verified = 1 WHERE user_pk = ?", (id,))
         db.commit()
-
-        return f"{id}"
+        
+        return f"Activated user with ID: {id}"
+    
     except Exception as ex:
-        print(ex)
+        return f"Failed to activate user with ID: {id}"
+        print("activate user get went wrong #########################",ex)
+    
+
+##############################
+# @post("/activate_user_with_key/<id>")
+# def _(id):
+#     try:
+#         db = x.db()
+#         q = db.execute("UPDATE users SET user_is_verified = 1 WHERE user_pk = ?", (id,))
+#         db.commit()
+
+
+
+#         return (f"{id}", 200)
+#     except Exception as ex:
+#         raise Exception("***** user could not be activated *****", 400)
+#         print(ex)
     
 
 
@@ -331,6 +351,7 @@ def _():
 ##############################
 try:
     import production
+
     application = default_app()
 except:
     run(host="0.0.0.0", port=80, debug=True, reloader=True, interval=0)
