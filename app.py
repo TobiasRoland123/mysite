@@ -266,14 +266,19 @@ def _(id):
     try:
         db = x.db()
         q = db.execute("UPDATE users SET user_is_verified = 1 WHERE user_pk = ?", (id,))
+        user_first_name = db.execute("SELECT user_first_name FROM users WHERE user_pk = ?", (id,)).fetchone()["user_first_name"]
         db.commit()
+
+        print(f"################################  {user_first_name}   #####################################")
         
-        return f"Activated user with ID: {id}"
+        # return f"Activated user with ID: {id}"
+        return template("activate_user.html", user_first_name=user_first_name) 
     
     except Exception as ex:
         return f"Failed to activate user with ID: {id}"
         print("activate user get went wrong #########################",ex)
-    
+    finally:
+        if "db" in locals(): db.close()
 
 ##############################
 # @post("/activate_user_with_key/<id>")
