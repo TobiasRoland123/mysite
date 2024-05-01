@@ -257,7 +257,20 @@ def _():
         print(ex)
     finally:
         if "db" in locals(): db.close()
-        
+
+##############################
+@post("/activate_user/<id>")
+def _(id):
+    try:
+        db = x.db()
+        q = db.execute("UPDATE users SET user_is_verified = 1 WHERE user_pk = ?", (id,))
+        db.commit()
+
+        return f"{id}"
+    except Exception as ex:
+        print(ex)
+    
+
 
 
 ##############################
