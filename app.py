@@ -6,7 +6,7 @@ import bcrypt
 import json
 import credentials
 import uuid
-from icecream import ic
+# from icecream import ic
 
 
 ##############################
@@ -63,7 +63,7 @@ def _():
             pass
         return template("index.html", items=items, mapbox_token=credentials.mapbox_token, is_logged=is_logged)
     except Exception as ex:
-        ic(ex)
+        print(ex)
         return ex
     finally:
         if "db" in locals(): db.close()
@@ -107,7 +107,7 @@ def _(page_number):
         <template mix-function="test">{json.dumps(items)}</template>
         """
     except Exception as ex:
-        ic(ex)
+        print(ex)
         return "ups..."
     finally:
         if "db" in locals(): db.close()
@@ -133,7 +133,7 @@ def _():
         return template("profile.html", is_logged=True, items=items)
         
     except Exception as ex:
-        ic(ex)
+        print(ex)
         response.status = 303 
         response.set_header('Location', '/login')
         return
@@ -211,7 +211,7 @@ def _():
     try:
         return template("signup.html")
     except Exception as ex:
-        ic(ex)
+        print(ex)
     
 
 
@@ -251,11 +251,11 @@ def _():
         q = db.execute("INSERT INTO users (user_pk, user_username, user_first_name, user_last_name, user_email, user_password, user_role, user_created_at, user_updated_at, user_is_verified, user_is_blocked) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_pk, user_username, user_first_name, user_last_name, user_email, hashed, user_role, "0", "0", "0", "0"))
         db.commit()
 
-        x.send_verification_email('samueltobiasrolanduyet@gmail.com', user_email, user_pk)
+        x.send_verifprintation_email('samueltobiasrolanduyet@gmail.com', user_email, user_pk)
    
         return "signup"
     except Exception as ex:
-        ic(ex)
+        print(ex)
     finally:
         if "db" in locals(): db.close()
 
@@ -293,7 +293,7 @@ def _(id):
 #         return (f"{id}", 200)
 #     except Exception as ex:
 #         raise Exception("***** user could not be activated *****", 400)
-#         ic(ex)
+#         print(ex)
     
 
 
@@ -337,7 +337,7 @@ def _():
             </template>
             """
         except Exception as ex:
-            ic(ex)
+            print(ex)
             response.status = 500
             return f"""
             <template mix-target="#toast">
