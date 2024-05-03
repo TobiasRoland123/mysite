@@ -1,6 +1,5 @@
 #########################
 from bottle import default_app, get, post, response, run, static_file, template, request
-import git
 import x
 import bcrypt
 import json
