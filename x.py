@@ -150,12 +150,12 @@ USER_PASSWORD_REGEX = "^.{6,50}$"
 
 def validate_user_password():
     error = f"password {USER_PASSWORD_MIN} to {USER_PASSWORD_MAX} characters"
-    error_password_not_match = "Password does not match with confirm password"
     user_password = request.forms.get("user_password", "").strip()
-    user_confirm_password = request.forms.get("user_confirm_password","").strip()
+
+    print(f"############# {user_password}   ################# ")
     if not re.match(USER_PASSWORD_REGEX, user_password): raise Exception(error, 400)
-    if user_password != user_confirm_password: raise Exception(error_password_not_match, 400)
-    return user_confirm_password
+
+    return user_password
 
 ##############################
 CUSTOMER_ROLE = "customer"
@@ -170,9 +170,9 @@ def validate_user_role():
 
 ##############################
 
-def confirm_password():
+def validate_user_confirm_password():
   error = f"password and confirm_password do not match"
-  user_password = request.forms.get("user_password", "").strip()
+  user_password = request.forms.get("user_confirm_password", "").strip()
   user_confirm_password = request.forms.get("user_confirm_password", "").strip()
   if user_password != user_confirm_password: raise Exception(error, 400)
   return user_confirm_password

@@ -222,6 +222,7 @@ def _():
 
         user_email = x.validate_user_email()
         user_password = x.validate_user_password()
+        user_confirm_password = x.validate_user_confirm_password()
         user_username = x.validate_user_username()
         user_first_name = x.validate_user_first_name()
         user_last_name = x.validate_user_last_name()
