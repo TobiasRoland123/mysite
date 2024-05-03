@@ -6,7 +6,6 @@ import bcrypt
 import json
 import credentials
 import uuid
-import requests
 
 
 ##############################
