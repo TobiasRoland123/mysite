@@ -56,6 +56,8 @@ def validate_logged():
 def send_verification_email(from_email, to_email, verification_id):
     try:
 
+        
+
         message = MIMEMultipart()
         message["To"] = from_email
         message["From"] = to_email
@@ -100,7 +102,7 @@ def validate_user_id():
 EMAIL_MAX = 100
 EMAIL_REGEX = "^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$"
 
-def validate_email():
+def validate_user_email():
     error = f"email invalid"
     user_email = request.forms.get("user_email", "").strip()
     if not re.match(EMAIL_REGEX, user_email): raise Exception(error, 400)
@@ -146,11 +148,14 @@ USER_PASSWORD_MIN = 6
 USER_PASSWORD_MAX = 50
 USER_PASSWORD_REGEX = "^.{6,50}$"
 
-def validate_password():
+def validate_user_password():
     error = f"password {USER_PASSWORD_MIN} to {USER_PASSWORD_MAX} characters"
+    error_password_not_match = "Password does not match with confirm password"
     user_password = request.forms.get("user_password", "").strip()
+    user_confirm_password = request.forms.get("user_confirm_password","").strip()
     if not re.match(USER_PASSWORD_REGEX, user_password): raise Exception(error, 400)
-    return user_password
+    if user_password != user_confirm_password: raise Exception(error_password_not_match, 400)
+    return user_confirm_password
 
 ##############################
 CUSTOMER_ROLE = "customer"

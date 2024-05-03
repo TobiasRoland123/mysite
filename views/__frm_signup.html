@@ -36,13 +36,18 @@
 
         <div>
                 <label for="user_last_name">Last Name</label>
-                <input name="user_last_name" id="user_last_name" class="w-full border" type="text" placeholder="Lastname" value="some lastname" mix-check="{{x.USER_USERNAME_REGEX}}">
+                <input name="user_last_name" id="user_last_name" class="w-full border" type="text" placeholder="Lastname" value="somelastname" mix-check="{{x.USER_USERNAME_REGEX}}">
         </div>
         <div>
                 <label for="user_password">Password</label>
                 <input name="user_password" class="w-full border" type="password" placeholder="password" value="password"
                     mix-check="{{x.USER_PASSWORD_REGEX}}">
         </div>
+        <div>
+            <label for="user_confirm_password">Confirm password</label>
+            <input name="user_confirm_password" id="user_confirm_password" class="w-full border" type="password" placeholder="password" value="password"
+                mix-check="{{x.USER_PASSWORD_REGEX}}">
+    </div>
     <button class=""
         mix-data="#frm_signup"
         mix-post="/signup"

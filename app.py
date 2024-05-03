@@ -220,13 +220,13 @@ def _():
 def _():
     try:
 
-        user_email = x.validate_email()
-        user_password = x.validate_password()
+        user_email = x.validate_user_email()
+        user_password = x.validate_user_password()
         user_username = x.validate_user_username()
         user_first_name = x.validate_user_first_name()
         user_last_name = x.validate_user_last_name()
         user_role = x.validate_user_role()
-        user_pk = str(uuid.uuid4())
+        user_pk = str(uuid.uuid4().hex)
         
 
         # # this makes user_password into a byte string
@@ -246,12 +246,23 @@ def _():
 
 
 
+        try:
+            db = x.db()
+            q = db.execute("INSERT INTO users (user_pk, user_username, user_first_name, user_last_name, user_email,user_password, user_role, user_created_at, user_updated_at, user_is_verified, user_is_blocked) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_pk, user_username, user_first_name, user_last_name, user_email, hashed, user_role, "0", "0", "0", "0"))
+            db.commit()
+            
+            x.send_verification_email('samueltobiasrolanduyet@gmail.com', user_email, user_pk)
+        except Exception as ex:
+            print(ex)
+        finally:
+            if "db" in locals(): db.close()
+        
 
-        db = x.db()
-        q = db.execute("INSERT INTO users (user_pk, user_username, user_first_name, user_last_name, user_email, user_password, user_role, user_created_at, user_updated_at, user_is_verified, user_is_blocked) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_pk, user_username, user_first_name, user_last_name, user_email, hashed, user_role, "0", "0", "0", "0"))
-        db.commit()
 
-        x.send_verifprintation_email('samueltobiasrolanduyet@gmail.com', user_email, user_pk)
+
+
+
+        
    
         return "signup"
     except Exception as ex:
@@ -302,8 +313,8 @@ def _(id):
 @post("/login")
 def _():
     try:
-        user_email = x.validate_email()
-        user_password = x.validate_password()
+        user_email = x.validate_user_email()
+        user_password = x.validate_user_password()
         db = x.db()
         q = db.execute("SELECT * FROM users WHERE user_email = ? LIMIT 1", (user_email,))
         user = q.fetchone()
