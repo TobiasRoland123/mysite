@@ -6,6 +6,7 @@ import bcrypt
 import json
 import credentials
 import uuid
+from icecream import ic
 
 
 ##############################
@@ -62,7 +63,7 @@ def _():
             pass
         return template("index.html", items=items, mapbox_token=credentials.mapbox_token, is_logged=is_logged)
     except Exception as ex:
-        print(ex)
+        ic(ex)
         return ex
     finally:
         if "db" in locals(): db.close()
@@ -106,7 +107,7 @@ def _(page_number):
         <template mix-function="test">{json.dumps(items)}</template>
         """
     except Exception as ex:
-        print(ex)
+        ic(ex)
         return "ups..."
     finally:
         if "db" in locals(): db.close()
@@ -132,7 +133,7 @@ def _():
         return template("profile.html", is_logged=True, items=items)
         
     except Exception as ex:
-        print(ex)
+        ic(ex)
         response.status = 303 
         response.set_header('Location', '/login')
         return
@@ -210,7 +211,7 @@ def _():
     try:
         return template("signup.html")
     except Exception as ex:
-        print(ex)
+        ic(ex)
     
 
 
@@ -254,7 +255,7 @@ def _():
    
         return "signup"
     except Exception as ex:
-        print(ex)
+        ic(ex)
     finally:
         if "db" in locals(): db.close()
 
@@ -292,7 +293,7 @@ def _(id):
 #         return (f"{id}", 200)
 #     except Exception as ex:
 #         raise Exception("***** user could not be activated *****", 400)
-#         print(ex)
+#         ic(ex)
     
 
 
@@ -336,7 +337,7 @@ def _():
             </template>
             """
         except Exception as ex:
-            print(ex)
+            ic(ex)
             response.status = 500
             return f"""
             <template mix-target="#toast">
