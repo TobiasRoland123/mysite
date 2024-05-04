@@ -210,17 +210,23 @@ def _():
 def _():
     try:
 
-        db = x.db()
-        q = db.execute("SELECT * FROM users")
-        # return "x"
-        users = q.fetchall()
+      
 
-        return template("signup.html", users=users)
+        return template("signup.html")
+    except Exception as ex:
+        print(f"########## {ex} ***************")
+
+
+##############################
+@get("/all-users")
+def _():
+    try:
+
+        db = x.db()  # Replace x.db with the actual function or method that returns a database connection object
+        users = db.execute("SELECT * FROM users").fetchall()
+        return template("all_users.html", users=users)
     except Exception as ex:
         print(ex)
-
-
-
 
 
 ##############################
