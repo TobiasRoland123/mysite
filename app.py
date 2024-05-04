@@ -336,6 +336,7 @@ def _():
         q = db.execute("SELECT * FROM users WHERE user_email = ? LIMIT 1", (user_email,))
         user = q.fetchone()
         if not user: raise Exception("user not found", 400)
+        if not user["user_is_verified"] == "1": raise Exception("user not verified", 400)
         
         try:
             if not  bcrypt.checkpw(user_password.encode(), user["user_password"].encode()): raise Exception("Invalid credentials", 400)
