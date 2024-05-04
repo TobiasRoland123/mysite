@@ -209,7 +209,13 @@ def _():
 @get("/signup")
 def _():
     try:
-        return template("signup.html")
+
+        db = x.db()
+        q = db.execute("SELECT * FROM users")
+        # return "x"
+        users = q.fetchall()
+
+        return template("signup.html", users=users)
     except Exception as ex:
         print(ex)
 
