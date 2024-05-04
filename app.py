@@ -277,7 +277,17 @@ def _():
 
 
 
+        return f"""
+        <template mix-target="[id='frm_signup']" mix-replace>
 
+            <div>
+                <h1 class="text-2xl font-bold">A mail has been sent to {user_email}</h1>
+                <p>Check email in order to verify account</p>
+            </div>
+
+         
+        </template>
+        """
 
         
    
