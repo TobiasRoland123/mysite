@@ -125,13 +125,13 @@ def _():
 def _():
     try:
         x.no_cache()
-        x.validate_user_logged()
+        user = x.validate_user_logged()
         db=x.db()
         q = db.execute("SELECT * FROM items ORDER BY item_created_at LIMIT 0, ?", (x.ITEMS_PER_PAGE,))
         # return "x"
         items = q.fetchall()
         print(items)
-        return template("profile.html", is_logged=True, items=items)
+        return template("profile.html", is_logged=True,user=user, items=items)
         
     except Exception as ex:
         print(ex)
@@ -289,7 +289,7 @@ def _():
 
 
 ##############################
-@get("/activate_user/<id>")
+@get("/activate-user/<id>")
 def _(id):
     try:
         db = x.db()
@@ -336,7 +336,11 @@ def _():
         q = db.execute("SELECT * FROM users WHERE user_email = ? LIMIT 1", (user_email,))
         user = q.fetchone()
         if not user: raise Exception("user not found", 400)
-        if not bcrypt.checkpw(user_password.encode(), user["user_password"].encode()): raise Exception("Invalid credentials", 400)
+        
+        try:
+            if not  bcrypt.checkpw(user_password.encode(), user["user_password"].encode()): raise Exception("Invalid credentials", 400)
+        except Exception as ex:
+            if not  bcrypt.checkpw(user_password.encode(), user["user_password"]): raise Exception("Invalid credentials", 400)
         user.pop("user_password") # Do not put the user's password in the cookie
         print(user)
         try:
@@ -356,6 +360,7 @@ def _():
         """
     except Exception as ex:
         try:
+            print(ex)
             response.status = ex.args[1]
             return f"""
             <template mix-target="#toast">
