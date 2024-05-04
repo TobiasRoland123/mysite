@@ -6,6 +6,7 @@ import bcrypt
 import json
 import credentials
 import uuid
+import time
 
 
 
@@ -242,6 +243,7 @@ def _():
         user_last_name = x.validate_user_last_name()
         user_role = x.validate_user_role()
         user_pk = str(uuid.uuid4().hex)
+        user_created_at = int(time.time())
         
 
         # # this makes user_password into a byte string
@@ -263,7 +265,7 @@ def _():
 
         try:
             db = x.db()
-            q = db.execute("INSERT INTO users (user_pk, user_username, user_first_name, user_last_name, user_email,user_password, user_role, user_created_at, user_updated_at, user_is_verified, user_is_blocked) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_pk, user_username, user_first_name, user_last_name, user_email, hashed, user_role, "0", "0", "0", "0"))
+            q = db.execute("INSERT INTO users (user_pk, user_username, user_first_name, user_last_name, user_email,user_password, user_role, user_created_at, user_updated_at, user_is_verified, user_is_blocked) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_pk, user_username, user_first_name, user_last_name, user_email, hashed, user_role, user_created_at, "0", "0", "0"))
             db.commit()
             
             x.send_verification_email('samueltobiasrolanduyet@gmail.com', user_email, user_pk)
