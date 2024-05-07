@@ -1,5 +1,5 @@
 #########################
-from bottle import default_app, get, post, response, run, static_file, template, request,delete
+from bottle import default_app, get, post, response, run, static_file, template, request,delete, put
 import git
 import x
 import bcrypt
@@ -363,7 +363,8 @@ def _():
         user = q.fetchone()
         if not user: raise Exception("user not found", 400)
 
-        print(f"########### user:   {user} ************")
+        print(f"########### user: ")
+        print(f"  {user} ************")
         if not user["user_is_verified"] == 1: raise Exception("user not verified", 400)
         
         try:
@@ -415,17 +416,10 @@ def _():
 
 
 ##############################
-@post("/edit-user")
+@put("/edit-user")
 def _():
     try:
-        user_cookie = request.get_cookie("user", secret=x.COOKIE_SECRET)
-        if not user_cookie:
-            response.status = 303 
-            response.set_header('Location', '/login')
-            return
-        
-        # Deserialize the user info from the cookie
-        user = json.loads(user_cookie)
+        user = x.validate_user_logged()
 
 
         user_email = x.validate_user_email()
@@ -443,7 +437,7 @@ def _():
         response.set_header('Location', '/profile')
         return
         
-    except Exception as ex:
+    except Exception as ex:    
         print(ex)
     finally:
         if "db" in locals(): db.close()

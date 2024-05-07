@@ -694,12 +694,12 @@ video {
   width: 100%;
 }
 
-.max-w-64 {
-  max-width: 16rem;
-}
-
 .max-w-96 {
   max-width: 24rem;
+}
+
+.max-w-64 {
+  max-width: 16rem;
 }
 
 .grid-cols-\[1fr_20fr_5fr\] {
@@ -815,14 +815,14 @@ video {
   line-height: 2.5rem;
 }
 
-.text-sm {
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-}
-
 .text-xl {
   font-size: 1.25rem;
   line-height: 1.75rem;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 
 .font-bold {
