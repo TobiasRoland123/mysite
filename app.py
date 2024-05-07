@@ -304,12 +304,27 @@ def _():
          
         </template>
         """
-
-        
-   
-        return "signup"
     except Exception as ex:
-        print(ex)
+        try:
+            print(ex)
+            response.status = ex.args[1]
+            return f"""
+            <template mix-target="#toast">
+                <div mix-ttl="3000" class="error">
+                    {ex.args[0]}
+                </div>
+            </template>
+            """
+        except Exception as ex:
+            print(ex)
+            response.status = 500
+            return f"""
+            <template mix-target="#toast">
+                <div mix-ttl="3000" class="error">
+                   System under maintainance
+                </div>
+            </template>
+            """
     finally:
         if "db" in locals(): db.close()
 
@@ -465,6 +480,113 @@ def _():
         print(ex)
     finally:
         if "db" in locals(): db.close()
+
+
+
+##############################
+@get("/forgot-password")
+def _():
+    try:
+        return template("forgot_password.html")
+    except Exception as ex:
+        print(ex)
+
+
+##############################
+@post("/send-reset-password-email")
+def _():
+    try:
+        user_email = x.validate_user_email()
+
+        db = x.db()
+        q = db.execute("SELECT * FROM users WHERE user_email = ? LIMIT 1", (user_email,))
+        user = q.fetchone()
+
+        x.send_reset_password_email("samueltobiasrolanduyet@gmail.com", user_email, user["user_pk"])
+
+
+
+        return f"{user}"
+    except Exception as ex:
+        print(ex)
+    finally:
+        if "db" in locals(): db.close()
+
+##############################
+@get("/change-password/<id>")
+def _(id):
+    try:
+        # db = x.db()
+        # q = db.execute("SELECT * FROM users WHERE user_pk = ? LIMIT 1", (id,))
+        # user = q.fetchone()
+
+
+        return template("change_password.html", id=id)
+    except Exception as ex:
+        print(ex)
+
+    finally:
+        if "db" in locals(): db.close()
+
+
+##############################
+@put("/change-password/<id>")
+def _(id):
+    try:
+        
+        user_password = x.validate_user_password()
+        user_confirm_password = x.validate_user_confirm_password()
+  
+            
+
+        updated_at = int(time.time())
+
+        # # this makes user_password into a byte string
+        password = user_password.encode() 
+    
+        # # Adding the salt to password
+        salt = bcrypt.gensalt()
+        # # Hashing the password
+        hashed = bcrypt.hashpw(password, salt)
+        # # printing the salt
+        print("Salt :")
+        print(salt)
+        
+        # # printing the hashed
+        print("Hashed")
+        print(hashed)    
+
+
+        db = x.db()
+
+        q = db.execute("UPDATE users SET user_password = ?, user_updated_at = ? WHERE user_pk = ?", ( hashed, updated_at,id))
+        db.commit()       
+
+        return f"user_password:  {user_password} ***********  user_confirm_password:  {user_confirm_password}"
+    except Exception as ex:
+        try:
+            print(ex)
+            response.status = ex.args[1]
+            return f"""
+            <template mix-target="#toast">
+                <div mix-ttl="3000" class="error">
+                    {ex.args[0]}
+                </div>
+            </template>
+            """
+        except Exception as ex:
+            print(ex)
+            response.status = 500
+            return f"""
+            <template mix-target="#toast">
+                <div mix-ttl="3000" class="error">
+                   System under maintainance
+                </div>
+            </template>
+            """
+    finally:
+        pass
+
 
 ############################################################
 @post("/check-email")

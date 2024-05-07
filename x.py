@@ -109,6 +109,66 @@ def send_verification_email(from_email, to_email, verification_id):
     except Exception as ex:
         print(ex)
         return "error"
+    
+
+
+##############################
+def send_reset_password_email(from_email, to_email, verification_id):
+    try:
+
+        
+
+        message = MIMEMultipart()
+        message["To"] = from_email
+        message["From"] = to_email
+        message["Subject"] = 'Reset password'
+
+        try:
+            import production
+            base_url = "https://samueltobias4343.eu.pythonanywhere.com"
+        except:
+            base_url =   "http://localhost"
+
+
+    
+        email_body= f""" 
+
+                        <!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                            <meta charset="UTF-8" />
+                            <meta
+                            name="viewport"
+                            content="width=device-width, initial-scale=1.0"
+                            />
+                            <title>Reset Password</title>
+                        </head>
+                        <body>
+                            <h1>Click the link below to reset your password</h1>
+                            <a href="{base_url}/change-password/{verification_id}">change password </a>
+                        </body>
+                        </html>
+
+             """
+ 
+        messageText = MIMEText(email_body, 'html')
+        message.attach(messageText)
+ 
+        email = from_email
+        password = 'sxakvggwacukkdmk'
+ 
+        server = smtplib.SMTP('smtp.gmail.com:587')
+        server.ehlo('Gmail')
+        server.starttls()
+        server.login(email,password)
+        from_email = from_email
+        to_email  = to_email
+        server.sendmail(from_email,to_email,message.as_string())
+ 
+        server.quit()
+    except Exception as ex:
+        print(ex)
+        return "error"
 
 ##############################
 
@@ -197,7 +257,7 @@ def validate_user_role():
 
 def validate_user_confirm_password():
   error = f"password and confirm_password do not match"
-  user_password = request.forms.get("user_confirm_password", "").strip()
+  user_password = request.forms.get("user_password", "").strip()
   user_confirm_password = request.forms.get("user_confirm_password", "").strip()
   if user_password != user_confirm_password: raise Exception(error, 400)
   return user_confirm_password
