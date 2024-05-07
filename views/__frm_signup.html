@@ -6,13 +6,15 @@
         <fieldset>
             <legend>Choose Your Role:</legend>
             <div class="flex justify-around">
-                <div>
+                <div >
                     <label for="user_role_customer">Im a customer</label>
                     <input name="user_role" id="user_role_customer" class="w-full border" type="radio" placeholder="Role" value="customer" checked>
+                    <p class="max-w-64 text-center text-sm">"Customers can can browse and rent properties."</p>
                 </div>
-                <div>
+                <div >
                     <label for="user_role_partner">Im a partner</label>
                     <input name="user_role" id="user_role_partner" class="w-full border" type="radio" placeholder="Role" value="partner">
+                    <p class="max-w-64 text-center text-sm">"Parners can do the same as Customers, but also has the option to rent out their own properties."</p>
                 </div>
             </div>
         </fieldset>
@@ -20,8 +22,11 @@
 
         <div>
                 <label for="user_email">Email</label>
-                <input name="user_email" id="user_email" class="w-full border" type="text" placeholder="email" value="samu1493@stud.kea.dk" 
-                mix-check="{{x.EMAIL_REGEX}}">
+                <input name="user_email" id="user_email" class="w-full border" type="email" placeholder="email" value="samu1493@stud.kea.dk" 
+                mix-check="{{x.EMAIL_REGEX}}" 
+                mix-post="check-email"
+                mix-data="#frm"
+                mix-blur>
         </div>
         <div>
                  <label for="user_username">Username</label>
@@ -56,4 +61,5 @@
     >
         Signup
     </button>
+    <div id="message"></div>
 </form>

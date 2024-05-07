@@ -1,5 +1,5 @@
 #########################
-from bottle import default_app, get, post, response, run, static_file, template, request
+from bottle import default_app, get, post, response, run, static_file, template, request,delete
 import git
 import x
 import bcrypt
@@ -230,6 +230,20 @@ def _():
         print(ex)
 
 
+
+##############################
+@delete("/delete-all-but-admin")
+def _():
+    try:
+        db = x.db()
+        q = db.execute("DELETE FROM users WHERE user_username != 'johndoe'")
+        db.commit()
+        return "x"
+    except Exception as ex:
+        print(ex)
+
+
+
 ##############################
 @post("/signup")
 def _():
@@ -396,6 +410,27 @@ def _():
 
     finally:
         if "db" in locals(): db.close()
+
+
+############################################################
+@post("/check-email")
+def _():
+    try:
+        email = x.validate_user_email()
+
+        return email
+        
+    except Exception as ex:
+        print(ex)
+        return f"""
+
+            <template mix-target="#message">
+                <div>
+                    Please enter a valid email
+                </div>
+            </template>
+    
+        """
 
 
  

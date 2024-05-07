@@ -33,6 +33,8 @@ INSERT INTO users VALUES(
 
 SELECT * FROM users
 
+DELETE FROM users WHERE user_username != 'johndoe';
+
 
 DROP TABLE IF EXISTS items;
 
