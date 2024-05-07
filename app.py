@@ -241,6 +241,8 @@ def _():
         return "x"
     except Exception as ex:
         print(ex)
+    finally:
+        if "db" in locals: db.close()
 
 
 
