@@ -2,11 +2,14 @@
 
 <main>
 
-    <div>Welcome {{user["user_first_name"]}}</div>
+    <div class="px-4 text-2xl font-bold">Welcome {{user["user_first_name"]}}</div>
     <div class="w-full pb-16 px-4">
 
-        %include("__frm_edit_user", user=user )
-
+    <div class="w-full flex flex-col items-center">
+        
+            %include("__frm_edit_user", user=user )
+    
+    </div>
 %include("__item_list", items=items )
 </div>
 </main>

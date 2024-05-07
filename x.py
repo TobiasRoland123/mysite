@@ -169,6 +169,63 @@ def send_reset_password_email(from_email, to_email, verification_id):
     except Exception as ex:
         print(ex)
         return "error"
+    
+
+
+##############################
+def send_user_deleted_email(from_email, to_email):
+    try:
+        message = MIMEMultipart()
+        message["To"] = from_email
+        message["From"] = to_email
+        message["Subject"] = 'Your account is deleted'
+
+        try:
+            import production
+            base_url = "https://samueltobias4343.eu.pythonanywhere.com"
+        except:
+            base_url =   "http://localhost"
+
+
+    
+        email_body= f""" 
+
+                        <!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                            <meta charset="UTF-8" />
+                            <meta
+                            name="viewport"
+                            content="width=device-width, initial-scale=1.0"
+                            />
+                            <title>Reset Password</title>
+                        </head>
+                        <body>
+                            <h1>Your Account has been deleted</h1>
+                           
+                        </body>
+                        </html>
+
+             """
+ 
+        messageText = MIMEText(email_body, 'html')
+        message.attach(messageText)
+ 
+        email = from_email
+        password = 'sxakvggwacukkdmk'
+ 
+        server = smtplib.SMTP('smtp.gmail.com:587')
+        server.ehlo('Gmail')
+        server.starttls()
+        server.login(email,password)
+        from_email = from_email
+        to_email  = to_email
+        server.sendmail(from_email,to_email,message.as_string())
+ 
+        server.quit()
+    except Exception as ex:
+        print(ex)
+        return "error"
 
 ##############################
 
@@ -197,7 +254,7 @@ def validate_user_email():
 
 USER_USERNAME_MIN = 2
 USER_USERNAME_MAX = 20
-USER_USERNAME_REGEX = "^[a-z]{2,20}$"
+USER_USERNAME_REGEX = "^[a-zA-Z\s]{2,20}$"
 
 def validate_user_username():
     error = f"username {USER_USERNAME_MIN} to {USER_USERNAME_MAX} lowercase english letters"

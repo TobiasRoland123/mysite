@@ -197,7 +197,7 @@ def _():
     response.delete_cookie("user")
     response.status = 303
     response.set_header("Location", "/login")
-    return """<template mix-redirect="/login"></template>"""
+   
 
 ##############################
 @get("/api")
@@ -466,15 +466,14 @@ def _():
 
         response.status = 303 
         response.set_header('Location', '/profile')
-
-
-
         return """
-        <script>
-            window.location.reload();
-        </script>
+   
+        
+            <template mix-redirect="/profile"></template> 
         """
-        return
+
+
+        
         
     except Exception as ex:    
         print(ex)
@@ -570,7 +569,8 @@ def _(id):
 
             <template mix-target="#frm_change_password" mix-replace>
             <div>
-                <h1> {user['user_first_name']} your password has been changed </h1>
+                <h1 class="text-2xl font-bold"> {user['user_first_name']}  </h1>
+                <p>your password has been changed</p>
                 <a class="text-blue-600 underline" href="/login"> Click here to login </a>
             </div>
              </template>
@@ -597,6 +597,71 @@ def _(id):
                 </div>
             </template>
             """
+    finally:
+        pass
+
+
+##############################
+@get("/delete-user")
+def _():
+    try:
+        user = x.validate_user_logged()
+       
+
+        return template("delete_user.html")
+    except Exception as ex:
+        print(ex)
+        response.status = 303 
+        response.set_header('Location', '/login')
+    finally:
+        pass
+
+
+
+##############################
+@post("/delete-user")
+def _():
+    try:
+        user = x.validate_user_logged()
+        user_password = x.validate_user_password()
+
+        db = x.db()
+        q = db.execute("SELECT * FROM users WHERE user_email = ? LIMIT 1", (user['user_email'],))
+        logged_user = q.fetchone()
+        
+
+
+        
+        print(f"######################## user_password: {user_password}")
+        print(f"######################## logged_user_password: {logged_user['user_password']}")
+
+        
+
+        try:
+            if not  bcrypt.checkpw(user_password.encode(), logged_user["user_password"].encode()): raise Exception("Invalid credentials", 400)
+        except Exception as ex:
+            if not  bcrypt.checkpw(user_password.encode(), logged_user["user_password"]): raise Exception("Invalid credentials", 400)
+       
+
+        db.execute("DELETE FROM users WHERE user_pk = ?", (logged_user['user_pk'],))
+        db.commit()
+
+        x.send_user_deleted_email("samueltobiasrolanduyet@gmail.com", logged_user['user_email'])
+
+        response.delete_cookie("user")
+
+        return """
+
+
+                <template mix-target="#frm_confirm_delete_user" mix-replace>
+                    <h1>User has been deleted</h1>
+                </template>
+
+            """
+    except Exception as ex:
+        print(ex)
+        response.status = 303 
+        response.set_header('Location', '/login')
     finally:
         pass
 

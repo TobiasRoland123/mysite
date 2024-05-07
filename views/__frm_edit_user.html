@@ -1,6 +1,6 @@
 %import x
 
-<form id="frm_edit_user" autocomplete="off" class="flex flex-col gap-2 w-full mx-4 md:w-1/2">
+<form id="frm_edit_user" autocomplete="off" class="flex flex-col gap-2 w-full  md:w-1/2">
         <div>
                 <label for="user_email">Email</label>
                 <input name="user_email" id="user_email" class="w-full border" type="email" placeholder="email" value="{{user['user_email']}}" 
@@ -31,6 +31,16 @@
         Save changes
     </button>
     <div id="message"></div>
+
+
+    <button 
+        class="bg-red-800"
+        mix-get="/delete-user"
+        mix-default="Delete Your Account"
+        mix-await="Please wait ..."
+>
+    Delete Your Account
+</button>
 </form>
 
 
