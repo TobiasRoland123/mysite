@@ -366,6 +366,8 @@ def _():
         print(f"########### user: ")
         print(f"  {user} ************")
         if not user["user_is_verified"] == 1: raise Exception("user not verified", 400)
+
+        if not user["user_is_blocked"] == 0: raise Exception("user is blocked", 400)
         
         try:
             if not  bcrypt.checkpw(user_password.encode(), user["user_password"].encode()): raise Exception("Invalid credentials", 400)
@@ -433,8 +435,30 @@ def _():
         q = db.execute("UPDATE users SET user_email =?, user_username = ?, user_first_name = ?, user_last_name = ?, user_updated_at = ? WHERE user_pk = ?", ( user_email,user_username, user_first_name, user_last_name, user_updated_at, user["user_pk"]))
         db.commit()        
 
+
+
+        updated_user = {**user, "user_email": user_email, "user_username": user_username, "user_first_name": user_first_name, "user_last_name": user_last_name, "user_updated_at": user_updated_at}
+
+        print("############### updated_user: ", updated_user)
+        print(updated_user)
+
+        try:
+            is_cookie_https = True
+        except:
+            is_cookie_https = False        
+        response.set_cookie("user", updated_user, secret=x.COOKIE_SECRET, httponly=True, secure=is_cookie_https)
+
+
         response.status = 303 
         response.set_header('Location', '/profile')
+
+
+
+        return """
+        <script>
+            window.location.reload();
+        </script>
+        """
         return
         
     except Exception as ex:    
@@ -467,6 +491,7 @@ def _():
 ##############################
 try:
     import production
+
 
     application = default_app()
 except:
