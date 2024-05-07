@@ -242,7 +242,7 @@ def _():
     except Exception as ex:
         print(ex)
     finally:
-        if "db" in locals: db.close()
+        if "db" in locals: db.close
 
 
 
@@ -413,6 +413,40 @@ def _():
     finally:
         if "db" in locals(): db.close()
 
+
+##############################
+@post("/edit-user")
+def _():
+    try:
+        user_cookie = request.get_cookie("user", secret=x.COOKIE_SECRET)
+        if not user_cookie:
+            response.status = 303 
+            response.set_header('Location', '/login')
+            return
+        
+        # Deserialize the user info from the cookie
+        user = json.loads(user_cookie)
+
+
+        user_email = x.validate_user_email()
+        user_username = x.validate_user_username()
+        user_first_name = x.validate_user_first_name()
+        user_last_name = x.validate_user_last_name()
+        user_updated_at = int(time.time())
+
+        db = x.db()
+
+        q = db.execute("UPDATE users SET user_email =?, user_username = ?, user_first_name = ?, user_last_name = ?, user_updated_at = ? WHERE user_pk = ?", ( user_email,user_username, user_first_name, user_last_name, user_updated_at, user["user_pk"]))
+        db.commit()        
+
+        response.status = 303 
+        response.set_header('Location', '/profile')
+        return
+        
+    except Exception as ex:
+        print(ex)
+    finally:
+        if "db" in locals(): db.close()
 
 ############################################################
 @post("/check-email")

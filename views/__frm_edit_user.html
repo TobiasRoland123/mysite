@@ -1,0 +1,37 @@
+%import x
+
+<form id="frm_edit_user" autocomplete="off" class="flex flex-col gap-2 w-full mx-4 md:w-1/2">
+        <div>
+                <label for="user_email">Email</label>
+                <input name="user_email" id="user_email" class="w-full border" type="email" placeholder="email" value="samu1493@stud.kea.dk" 
+                mix-check="{{x.EMAIL_REGEX}}" 
+                mix-post="edit-user"
+                mix-data="#frm"
+                mix-blur>
+        </div>
+        <div>
+                 <label for="user_username">Username</label>
+                <input name="user_username" id="user_username" class="w-full border" type="text" placeholder="Username" value="testusername" mix-check="{{x.USER_USERNAME_REGEX}}">
+        </div>
+
+        <div>
+                 <label for="user_first_name">First Name</label>
+                <input name="user_first_name" class="w-full border" type="text" placeholder="First name" value="myfirstname" 
+                mix-check="{{x.USER_USERNAME_REGEX}}">
+        </div>
+
+        <div>
+                <label for="user_last_name">Last Name</label>
+                <input name="user_last_name" id="user_last_name" class="w-full border" type="text" placeholder="Lastname" value="somelastname" mix-check="{{x.USER_USERNAME_REGEX}}">
+        </div>
+      
+    <button class=""
+        mix-data="#frm_edit_user"
+        mix-post="/edit-user"
+        mix-default="Sava changes"
+        mix-await="Please wait ..."
+    >
+        Save changes
+    </button>
+    <div id="message"></div>
+</form>
