@@ -560,9 +560,22 @@ def _(id):
         db = x.db()
 
         q = db.execute("UPDATE users SET user_password = ?, user_updated_at = ? WHERE user_pk = ?", ( hashed, updated_at,id))
-        db.commit()       
+        db.commit()    
 
-        return f"user_password:  {user_password} ***********  user_confirm_password:  {user_confirm_password}"
+
+        get_user_query = db.execute("SELECT * FROM users WHERE user_pk = ?", (id,))   
+        user = get_user_query.fetchone()
+
+        return f"""
+
+            <template mix-target="#frm_change_password" mix-replace>
+            <div>
+                <h1> {user['user_first_name']} your password has been changed </h1>
+                <a class="text-blue-600 underline" href="/login"> Click here to login </a>
+            </div>
+             </template>
+
+            """
     except Exception as ex:
         try:
             print(ex)
