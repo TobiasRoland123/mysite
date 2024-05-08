@@ -1,5 +1,5 @@
 #########################
-from bottle import default_app, get, post, response, run, static_file, template, request,delete, put
+from bottle import default_app, get, post, response, run, static_file, template, request,delete, put, redirect
 import git
 import x
 import bcrypt
@@ -464,14 +464,8 @@ def _():
         response.set_cookie("user", updated_user, secret=x.COOKIE_SECRET, httponly=True, secure=is_cookie_https)
 
 
-        response.status = 303 
-        response.set_header('Location', '/profile')
-        return """
-   
-        
-            <template mix-redirect="/profile"></template> 
-        """
-
+       
+        redirect(request.url)
 
         
         
@@ -691,7 +685,6 @@ def _():
 ##############################
 try:
     import production
-
 
     application = default_app()
 except:
