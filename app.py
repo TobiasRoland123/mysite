@@ -281,7 +281,7 @@ def _():
 
         try:
             db = x.db()
-            q = db.execute("INSERT INTO users (user_pk, user_username, user_first_name, user_last_name, user_email,user_password, user_role, user_created_at, user_updated_at, user_is_verified, user_blocked_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_pk, user_username, user_first_name, user_last_name, user_email, hashed, user_role, user_created_at, "0", "0", "0"))
+            q = db.execute("INSERT INTO users (user_pk, user_username, user_first_name, user_last_name, user_email,user_password, user_role, user_created_at, user_updated_at, user_is_verified, user_blocked_at,user_deleted_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)", (user_pk, user_username, user_first_name, user_last_name, user_email, hashed, user_role, user_created_at, "0", "0", "0","0"))
             db.commit()
             
             x.send_verification_email('samueltobiasrolanduyet@gmail.com', user_email, user_pk)
@@ -382,6 +382,7 @@ def _():
         print(f"  {user} ************")
         if not user["user_is_verified"] == 1: raise Exception("user not verified", 400)
 
+        if not user["user_deleted_at"] == 0: raise Exception("user doesn't exist", 400)
         if not user["user_blocked_at"] == 0: raise Exception("user is blocked", 400)
         
         try:
@@ -638,7 +639,7 @@ def _():
        
 
       
-        db.execute("UPDATE users SET user_blocked_at = ? WHERE user_pk = ?", (int(time.time()), user["user_pk"]))
+        db.execute("UPDATE users SET user_deleted_at = ? WHERE user_pk = ?", (int(time.time()), user["user_pk"]))
         db.commit()
 
         x.send_user_deleted_email("samueltobiasrolanduyet@gmail.com", logged_user['user_email'])
