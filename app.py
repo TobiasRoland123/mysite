@@ -728,7 +728,7 @@ def _():
     try:
         item_pk = uuid.uuid4().hex
         item_name = x.validate_item_name()
-        item_splash_image = x.validate_item_images()
+        item_splash_image = "x.validate_item_images()"
         item_lat = random.uniform(55.615, 55.727)
         item_lon = random.uniform(12.451, 12.650)
         item_stars = 5
@@ -738,10 +738,27 @@ def _():
         item_owner_fk = "01ad74495a114c28b80fd73be024aa7d"
 
 
-
-        print("##############*************'##################")
-        print(item_splash_image)
         db = x.db()
+
+            # Images
+        item_images = x.validate_item_images()
+
+
+        image_pk =  uuid.uuid4().hex
+
+
+           # Process each image, rename it, save it, and store just the filename in the database
+        for index, image in enumerate(item_images, start=1):
+            filename = f"{item_pk}_{index}.{image.filename.split('.')[-1]}"
+            path = f"images/{filename}"
+            image.save(path)  # Save the image with the new filename
+
+            # Insert the image filename into the item_images table (without path)
+            db.execute("INSERT INTO items_images (image_pk,item_fk, image_created_at) VALUES (?, ?,?)", (image_pk,item_pk, 0))
+            db.commit()
+
+        print("##############***********w**'##################")
+        print(item_splash_image)
         q = db.execute("INSERT INTO items (item_pk, item_name, item_splash_image, item_lat, item_lon, item_stars, item_price_per_night, item_created_at, item_updated_at, item_owner_fk) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
                (item_pk, item_name, item_splash_image, item_lat, item_lon, item_stars, item_price_per_night, item_created_at, item_updated_at, item_owner_fk))
         db.commit()

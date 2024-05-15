@@ -38,6 +38,9 @@ SELECT * FROM users
 DELETE FROM users WHERE user_username != 'johndoe';
 
 
+
+###############################################################################################################
+
 DROP TABLE IF EXISTS items;
 
 CREATE TABLE items(
@@ -91,15 +94,20 @@ LIMIT 3 OFFSET 9;
 
 
 
+###############################################################################################################
 
 
+DROP TABLE IF EXISTS items_images;
+
+CREATE TABLE items_images(
+    image_pk                TEXT,
+    item_fk                 TEXT, 
+    image_created_at        INTEGER,
+    PRIMARY KEY(image_pk)
+) WITHOUT ROWID;
 
 
-
-
-
-
-
+SELECT * FROM items_images
 
 
 
