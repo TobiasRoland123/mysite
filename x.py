@@ -322,18 +322,62 @@ def validate_user_confirm_password():
 ##############################
 
 
+##############################
+
+ITEM_NAME_MIN = 2
+ITEM_NAME_MAX = 20
+ITEM_NAME_REGEX = "^[a-zA-Z\s]{2,20}$"
+
+def validate_item_name():
+
+
+    error = f"name {ITEM_NAME_MIN} to {ITEM_NAME_MAX} lowercase english letters"
+    item_name = request.forms.get("item_name", "").strip()
+  
+    if not re.match(ITEM_NAME_REGEX, item_name): raise Exception(error, 400)
+    return item_name
 
 
 
 
+##############################
+
+ITEM_PRICE_MIN = 0
+ITEM_PRICE_MAX = 20000
+ITEM_PRICE_REGEX = "^(0|[1-9][0-9]{0,3}|1[0-9]{4}|20000)$"
+
+def validate_item_price():
 
 
+    error = f"price needs to be bwtween {ITEM_NAME_MIN} and {ITEM_NAME_MAX} "
+    item_price_per_night = request.forms.get("item_price_per_night", "").strip()
+   
+    if not re.match(ITEM_PRICE_REGEX, item_price_per_night): raise Exception(error, 400)
+    return item_price_per_night
 
 
+############################## TODO: Fix this, we need to validate the image size and number of images
+ITEM_IMAGES_MIN = 1
+ITEM_IMAGES_MAX = 5
+ITEM_IMAGE_MAX_SIZE = 1024 * 1024 * 5 # 5MB
 
 
+def validate_item_images():
+    item_splash_images = request.files.getall("item_splash_images")
 
 
+    print(item_splash_images)
+
+    if len(item_splash_images) == 0 or len(item_splash_images) < ITEM_IMAGES_MIN or len(item_splash_images) > ITEM_IMAGES_MAX:
+        raise Exception(f"Invalid number of images, must be between {ITEM_IMAGES_MIN} and {ITEM_IMAGES_MAX}", 400)
+
+    allowed_extensions = ['.png', '.jpg', '.webp']
+    for image in item_splash_images:
+        if not pathlib.Path(image.filename).suffix.lower() in allowed_extensions:
+            raise Exception("Invalid image extension", 400)
+
+
+    return item_splash_images
 
 
 

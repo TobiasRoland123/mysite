@@ -7,6 +7,7 @@ import json
 import credentials
 import uuid
 import time
+import random
 
 
 
@@ -74,23 +75,39 @@ def _():
 @get("/items/page/<page_number>")
 def _(page_number):
     try:
-        db = x.db()
-        next_page = int(page_number) + 1
-        offset = (int(page_number) - 1) * x.ITEMS_PER_PAGE
-        q = db.execute(f"""     SELECT * FROM items 
-                                ORDER BY item_created_at 
-                                LIMIT ? OFFSET {offset}
-                        """, (x.ITEMS_PER_PAGE,))
-        items = q.fetchall()
-        print(items)
 
         is_logged = False
 
         try:
-            x.validate_user_logged()
+            user = x.validate_user_logged()
             is_logged =True
         except:
             pass
+
+        db = x.db()
+        next_page = int(page_number) + 1
+        offset = (int(page_number) - 1) * x.ITEMS_PER_PAGE
+        if is_logged:
+            if user['user_role'] == "admin":
+                q = db.execute(f"""     SELECT * FROM items 
+                                    ORDER BY item_created_at 
+                                    LIMIT ? OFFSET {offset}
+                            """, (x.ITEMS_PER_PAGE,))
+            elif user['user_role'] == "partner":
+                q = db.execute(f"""     SELECT * FROM items WHERE item_owner_fk = ?
+                                    ORDER BY item_created_at 
+                                    LIMIT ? OFFSET {offset}
+                            """, (user['user_pk'],x.ITEMS_PER_PAGE,))
+        else:
+            q = db.execute(f"""     SELECT * FROM items 
+                                    ORDER BY item_created_at 
+                                    LIMIT ? OFFSET {offset}
+                            """, (x.ITEMS_PER_PAGE,))
+        items = q.fetchall()
+        print(items)
+
+
+        
 
         html = ""
         for item in items: 
@@ -127,11 +144,33 @@ def _():
         x.no_cache()
         user = x.validate_user_logged()
         db=x.db()
-        q = db.execute("SELECT * FROM items ORDER BY item_created_at LIMIT 0, ?", (x.ITEMS_PER_PAGE,))
-        # return "x"
-        items = q.fetchall()
-        print(items)
-        return template("profile.html", is_logged=True,user=user, items=items)
+
+        if user['user_role'] == 'partner':
+            try:
+                q = db.execute("SELECT * FROM items WHERE item_owner_fk = ? ORDER BY item_created_at LIMIT 0, ?", (user['user_pk'],x.ITEMS_PER_PAGE))
+                items = q.fetchall()
+
+                print("#########################################")
+                print(items)
+                profile_template = template("profile_partner.html", is_logged=True,user=user, items=items)
+            except Exception as ex:
+                print("############   error in fetching partner items   ****************:")
+                print(ex)
+        elif user['user_role'] == 'admin':
+            try:
+                q = db.execute("SELECT * FROM items ORDER BY item_created_at LIMIT 0, ?", (x.ITEMS_PER_PAGE,))                
+                items = q.fetchall()
+                profile_template = template("profile_admin.html", is_logged=True,user=user, items=items)
+            except Exception as ex:
+                print("############   error in fetching admin items   ****************:")
+                print(ex)
+        else:
+            profile_template = template("profile_customer.html", is_logged=True,user=user)
+
+
+      
+
+        return profile_template
         
     except Exception as ex:
         print(ex)
@@ -681,6 +720,58 @@ def _():
             </template>
     
         """
+
+#####################################
+
+@post("/create_property")
+def _():
+    try:
+        item_pk = uuid.uuid4().hex
+        item_name = x.validate_item_name()
+        item_splash_image = x.validate_item_images()
+        item_lat = random.uniform(55.615, 55.727)
+        item_lon = random.uniform(12.451, 12.650)
+        item_stars = 5
+        item_price_per_night  = x.validate_item_price()
+        item_created_at = 1
+        item_updated_at = 0
+        item_owner_fk = "01ad74495a114c28b80fd73be024aa7d"
+
+
+
+        print("##############*************'##################")
+        print(item_splash_image)
+        db = x.db()
+        q = db.execute("INSERT INTO items (item_pk, item_name, item_splash_image, item_lat, item_lon, item_stars, item_price_per_night, item_created_at, item_updated_at, item_owner_fk) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
+               (item_pk, item_name, item_splash_image, item_lat, item_lon, item_stars, item_price_per_night, item_created_at, item_updated_at, item_owner_fk))
+        db.commit()
+            
+        return item_name
+    except Exception as ex:
+        print(ex)
+    finally:
+        pass
+
+
+
+###############################################
+ITEM_IMAGES_MIN = 1
+ITEM_IMAGES_MAX = 5
+ITEM_IMAGE_MAX_SIZE = 1024 * 1024 * 5 # 5MB
+
+
+def validate_item_images():
+    item_images = request.files.getall("item_splash_image")
+
+    print(item_images)
+
+    if len(item_images) == 0 or len(item_images) < ITEM_IMAGES_MIN or len(item_images) > ITEM_IMAGES_MAX:
+        raise Exception(f"Invalid number of images, must be between {ITEM_IMAGES_MIN} and {ITEM_IMAGES_MAX}", 400)
+
+    allowed_extensions = ['.png', '.jpg', '.webp']
+    for image in item_images:
+        if not pathlib.Path(image.filename).suffix.lower() in allowed_extensions:
+            raise Exception("Invalid image extension", 400)
 
 
  

@@ -1,0 +1,17 @@
+%include("_header" )
+
+<main>
+
+    <div class="px-4 text-2xl font-bold">Welcome {{user["user_first_name"]}}</div>
+    <div class="w-full pb-16 px-4">
+
+    <div class="w-full flex flex-col items-center">
+        
+            %include("__frm_edit_user", user=user )
+    
+    </div>
+
+</div>
+</main>
+
+%include("_footer")
