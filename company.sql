@@ -106,6 +106,18 @@ CREATE TABLE items_images(
     PRIMARY KEY(image_pk)
 ) WITHOUT ROWID;
 
+INSERT INTO items_images VALUES 
+("5dbce622fa2b4f22a6f6957d07ff4951.webp","01ad74495a114c28b80fd73be024aa7d", 1),
+("5dbce622fa2b4f22a6f6957d07ff4952.webp","d11854217ecc42b2bb17367fe33dc8f4",0),
+("5dbce622fa2b4f22a6f6957d07ff4953.webp","d11854217ecc42b2bb17367fe33dc8f4",0),
+("5dbce622fa2b4f22a6f6957d07ff4954.webp","d11854217ecc42b2bb17367fe33dc8f4",0),
+("5dbce622fa2b4f22a6f6957d07ff4955.webp","d11854217ecc42b2bb17367fe33dc8f4",0),
+("5dbce622fa2b4f22a6f6957d07ff4956.webp","d11854217ecc42b2bb17367fe33dc8f4",0),
+("5dbce622fa2b4f22a6f6957d07ff4957.webp","d11854217ecc42b2bb17367fe33dc8f4",0),
+("5dbce622fa2b4f22a6f6957d07ff4958.webp","d11854217ecc42b2bb17367fe33dc8f4",0),
+("5dbce622fa2b4f22a6f6957d07ff4959.webp","d11854217ecc42b2bb17367fe33dc8f4",0),
+("5dbce622fa2b4f22a6f6957d07ff49510.webp","d11854217ecc42b2bb17367fe33dc8f4",0);
+
 
 SELECT * FROM items_images
 

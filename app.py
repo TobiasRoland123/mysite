@@ -53,9 +53,11 @@ def _():
     try:
         db = x.db()
         q = db.execute("SELECT * FROM items ORDER BY item_created_at LIMIT 0, ?", (x.ITEMS_PER_PAGE,))
+        q_images = db.execute("SELECT * FROM items_images ORDER BY image_created_at ")
         # return "x"
         items = q.fetchall()
-        print(items)
+        images = q_images.fetchall()
+        print(images)
         is_logged = False
 
         try:
@@ -63,7 +65,7 @@ def _():
             is_logged =True
         except:
             pass
-        return template("index.html", items=items, mapbox_token=credentials.mapbox_token, is_logged=is_logged)
+        return template("index.html", items=items, images=images, mapbox_token=credentials.mapbox_token, is_logged=is_logged)
     except Exception as ex:
         print(ex)
         return ex
