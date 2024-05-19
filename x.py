@@ -395,14 +395,18 @@ ITEM_IMAGE_MAX_SIZE = 1024 * 1024 * 5 # 5MB
 
 def validate_item_images():
     item_splash_images = request.files.getall("item_splash_images")
-
+        
 
     print(item_splash_images)
+    for image in item_splash_images:
+        if pathlib.Path(image.filename).suffix.lower() == "":
+            raise Exception("No image file added", 400)
+
 
     if len(item_splash_images) == 0 or len(item_splash_images) < ITEM_IMAGES_MIN or len(item_splash_images) > ITEM_IMAGES_MAX:
         raise Exception(f"Invalid number of images, must be between {ITEM_IMAGES_MIN} and {ITEM_IMAGES_MAX}", 400)
 
-    allowed_extensions = ['.png', '.jpg', '.webp']
+    allowed_extensions = ['.png', '.jpg','.jpeg', '.webp']
     for image in item_splash_images:
         if not pathlib.Path(image.filename).suffix.lower() in allowed_extensions:
             raise Exception("Invalid image extension", 400)
