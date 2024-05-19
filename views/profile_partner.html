@@ -2,7 +2,7 @@
 
 <main>
 
-    <div class="px-4 text-2xl font-bold">Welcome {{user["user_first_name"]}}</div>
+    <div class="px-4 text-2xl font-bold">Welcome {{user["user_first_name"]}} you are logged in as a {{role}}</div>
     <div class="w-full pb-16 px-4">
 
     <div class="w-full flex flex-col items-center">
@@ -13,7 +13,7 @@
          
 
     </div>
-            %include("__item_list", items=items )
+            %include("__item_list", items=items, role=role)
     </div>
 </main>
 

@@ -1,3 +1,6 @@
+%import x
+
+
 <div class="item">
     % for image_url in item['item_images']:
     <img alt="" src="/images/{{image_url}}"
@@ -26,14 +29,73 @@
     </div>
 
     %if get("is_logged", False):
-    <form id="{{item['item_pk']}}">
-        <input name="item_id" type="text" value="{{item['item_pk']}}" class="hidden">
-        <button
-            mix-data="[id='{{item['item_pk']}}']"
-            mix-post="/toogle_item_block"
-        >
-            Block
-        </button>
-    </form>
+        %if role == "partner" or role == "admin":
+    
+       
+            <button class="mb-2 open-dialog-btn" data-dialog-id="dialog-{{item['item_pk'] }}">
+                Edit details
+            </button>
+
+            <form id="{{item['item_pk']}}">
+            <dialog id="dialog-{{item['item_pk']}}" class="rounded-lg p-4 w-[500px]">
+                <h3 class="text-lg font-bold">Edit {{item["item_name"]}}</h3>
+             
+
+                <div>
+                    <label for="item_name">Name</label>
+                    <input name="item_name" id="item_name" class="w-full border" type="text" placeholder="name" value="Villa lilla kulla" 
+                    mix-check="{{x.ITEM_NAME_REGEX}}" 
+    
+                    >
+                </div>
+        
+                <div>
+                    <label for="item_splash_images">Image</label>
+                    <input name="item_splash_images" id="item_splash_images" class="w-full border" multiple type="file" placeholder="splash_image" accept=".png, .jpg, .jpeg, .webp" max="5" min="1">
+                </div>
+        
+        
+        
+                <div>
+                    <label for="item_price_per_night">Price per night</label>
+                    <input name="item_price_per_night" id="item_price_per_night" class="w-full border" type="text" placeholder="Price per night" value=222 >
+                </div>
+                <div id="existing-images" class="flex flex-wrap gap-2">
+                    % for image_url in item['item_images']:
+                    <div class="flex">
+                        <img src="/images/{{image_url}}" alt="Image" class="w-32 h-32 object-cover rounded-lg">
+                    </div>
+                    % end
+                </div>
+
+                <input name="item_images" class="w-full border p-2" type="file" multiple="multiple" accept="image/*"
+                    value="{{item['item_images']}}">
+
+                <button mix-data="[id='{{item['item_pk']}}_2']" mix-put="/edit_item">
+                    Edit
+                </button>
+
+
+         
+                <button class="mt-2 close-dialog" data-dialog-id="dialog-{{ item['item_pk'] }}">
+                    Close
+                </button>
+            </dialog>
+        </form>
+        %else:
+            
+        <form id="{{item['item_pk']}}">
+            <input name="item_id" type="text" value="{{item['item_pk']}}" class="hidden">
+            <button
+                mix-data="[id='{{item['item_pk']}}']"
+                mix-post="/toogle_item_block"
+            >
+                Block
+            </button>
+        
+        </form>
     %end 
 </div>
+
+
+<script src="../app.js" defer></script>

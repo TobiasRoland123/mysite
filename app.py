@@ -183,7 +183,7 @@ def _():
 
                 print("items:  #########################################")
                 print(items)
-                profile_template = template("profile_partner.html", is_logged=True,user=user, items=items)
+                profile_template = template("profile_partner.html", is_logged=True,user=user, items=items, role=user['user_role'])
             except Exception as ex:
                 print("############   error in fetching partner items   ****************:")
                 print(ex)
@@ -197,12 +197,12 @@ def _():
                 rows = q.fetchall()
 
                 items = x.group_images(rows)
-                profile_template = template("profile_admin.html", is_logged=True,user=user, items=items)
+                profile_template = template("profile_admin.html", is_logged=True,user=user, items=items, role=user['user_role'])
             except Exception as ex:
                 print("############   error in fetching admin items   ****************:")
                 print(ex)
         else:
-            profile_template = template("profile_customer.html", is_logged=True,user=user)
+            profile_template = template("profile_customer.html", is_logged=True,user=user , role='customer')
 
 
 
