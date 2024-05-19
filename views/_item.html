@@ -36,10 +36,10 @@
                 Edit details
             </button>
 
-            <form id="{{item['item_pk']}}">
+            
             <dialog id="dialog-{{item['item_pk']}}" class="rounded-lg p-4 w-[500px]">
                 <h3 class="text-lg font-bold">Edit {{item["item_name"]}}</h3>
-             
+                <form id="{{item['item_pk']}}">
 
                 <div>
                     <label for="item_name">Name</label>
@@ -74,14 +74,14 @@
                 <button mix-data="[id='{{item['item_pk']}}_2']" mix-put="/edit_item">
                     Edit
                 </button>
-
+            </form>
 
          
-                <button class="mt-2 close-dialog" data-dialog-id="dialog-{{ item['item_pk'] }}">
+                <button class="mt-2 close-dialog-btn" data-dialog-id="dialog-{{ item['item_pk'] }}">
                     Close
                 </button>
             </dialog>
-        </form>
+    
         %else:
             
         <form id="{{item['item_pk']}}">
