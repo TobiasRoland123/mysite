@@ -122,34 +122,7 @@ def _(page_number):
         print(rows)
         
 
-        items = x.group_images(rows)
-    # # Group images by item_pk
-    #     items = {}
-    #     for row in rows:
-    #         item_pk = row['item_pk']
-    #         if item_pk not in items:
-    #                 items[item_pk] = {
-    #                     'item_pk': row['item_pk'],
-    #                     'item_name': row['item_name'],
-    #                     'item_price_per_night': row['item_price_per_night'],
-    #                     'item_lat': row['item_lat'],
-    #                     'item_lon': row['item_lon'],
-    #                     'item_stars': row['item_stars'],
-    #                     'item_created_at': row['item_created_at'],
-    #                     'item_updated_at': row['item_updated_at'],
-    #                     'item_images': []
-    #                 }
-    #         if row['image_url']:
-    #                 items[item_pk]['item_images'].append(row['image_url'])
-
-    #     items = list(items.values())
-
-
-
-
-
-
-        
+        items = x.group_images(rows)        
 
         html = ""
         for item in items: 
