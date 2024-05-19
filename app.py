@@ -803,7 +803,7 @@ def _():
                (item_pk, item_name, item_lat, item_lon, item_stars, item_price_per_night, item_created_at, item_updated_at, item_owner_fk))
         db.commit()
             
-        return item_name
+        redirect(request.url)
     except Exception as ex:
         try:
             print(ex)
