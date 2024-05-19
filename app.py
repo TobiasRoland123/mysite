@@ -52,12 +52,19 @@ def git_update():
 def _():
     try:
         db = x.db()
-        q = db.execute("SELECT * FROM items ORDER BY item_created_at LIMIT 0, ?", (x.ITEMS_PER_PAGE,))
-        q_images = db.execute("SELECT * FROM items_images ORDER BY image_created_at ")
+        # q = db.execute("SELECT * FROM items ORDER BY item_created_at LIMIT 0, ?", (x.ITEMS_PER_PAGE,))
+        q = db.execute("SELECT * FROM items_images INNER JOIN items ON items_images.item_fk  = items.item_pk LIMIT 0, ?", (x.ITEMS_PER_PAGE,))
+        
         # return "x"
-        items = q.fetchall()
-        images = q_images.fetchall()
-        print(images)
+        rows = q.fetchall()
+
+        items = x.group_images(rows)
+
+
+
+        # q_images = db.execute("SELECT * FROM items_images ORDER BY image_created_at ")
+        # images = q_images.fetchall()
+        print(items)
         is_logged = False
 
         try:
@@ -65,7 +72,7 @@ def _():
             is_logged =True
         except:
             pass
-        return template("index.html", items=items, images=images, mapbox_token=credentials.mapbox_token, is_logged=is_logged)
+        return template("index.html", items=items,  mapbox_token=credentials.mapbox_token, is_logged=is_logged)
     except Exception as ex:
         print(ex)
         return ex
@@ -91,22 +98,55 @@ def _(page_number):
         offset = (int(page_number) - 1) * x.ITEMS_PER_PAGE
         if is_logged:
             if user['user_role'] == "admin":
-                q = db.execute(f"""     SELECT * FROM items 
+                q = db.execute(f""" SELECT * FROM items_images 
+                                    INNER JOIN items ON items_images.item_fk  = items.item_pk  
                                     ORDER BY item_created_at 
                                     LIMIT ? OFFSET {offset}
                             """, (x.ITEMS_PER_PAGE,))
             elif user['user_role'] == "partner":
-                q = db.execute(f"""     SELECT * FROM items WHERE item_owner_fk = ?
+                q = db.execute(f"""SELECT * FROM items_images 
+                                    INNER JOIN items ON items_images.item_fk  = items.item_pk
+                                    WHERE item_owner_fk = ?
                                     ORDER BY item_created_at 
                                     LIMIT ? OFFSET {offset}
                             """, (user['user_pk'],x.ITEMS_PER_PAGE,))
         else:
-            q = db.execute(f"""     SELECT * FROM items 
+            q = db.execute(f"""     SELECT * FROM items_images 
+                                    INNER JOIN items ON items_images.item_fk  = items.item_pk  
                                     ORDER BY item_created_at 
                                     LIMIT ? OFFSET {offset}
                             """, (x.ITEMS_PER_PAGE,))
-        items = q.fetchall()
-        print(items)
+        rows = q.fetchall()
+
+        print("################################# morew btn pressed rows:")
+        print(rows)
+        
+
+        items = x.group_images(rows)
+    # # Group images by item_pk
+    #     items = {}
+    #     for row in rows:
+    #         item_pk = row['item_pk']
+    #         if item_pk not in items:
+    #                 items[item_pk] = {
+    #                     'item_pk': row['item_pk'],
+    #                     'item_name': row['item_name'],
+    #                     'item_price_per_night': row['item_price_per_night'],
+    #                     'item_lat': row['item_lat'],
+    #                     'item_lon': row['item_lon'],
+    #                     'item_stars': row['item_stars'],
+    #                     'item_created_at': row['item_created_at'],
+    #                     'item_updated_at': row['item_updated_at'],
+    #                     'item_images': []
+    #                 }
+    #         if row['image_url']:
+    #                 items[item_pk]['item_images'].append(row['image_url'])
+
+    #     items = list(items.values())
+
+
+
+
 
 
         
@@ -149,10 +189,26 @@ def _():
 
         if user['user_role'] == 'partner':
             try:
-                q = db.execute("SELECT * FROM items WHERE item_owner_fk = ? ORDER BY item_created_at LIMIT 0, ?", (user['user_pk'],x.ITEMS_PER_PAGE))
-                items = q.fetchall()
+                q = db.execute("""SELECT * FROM items_images 
+                               INNER JOIN items ON items_images.item_fk  = items.item_pk 
+                               WHERE item_owner_fk = ? 
+                               ORDER BY item_created_at """, 
+                               (user['user_pk'],))
+                rows = q.fetchall()
 
-                print("#########################################")
+
+                print("rows: *************************")
+                print(rows)
+
+
+
+
+                items = x.group_images(rows)
+
+
+               
+
+                print("items:  #########################################")
                 print(items)
                 profile_template = template("profile_partner.html", is_logged=True,user=user, items=items)
             except Exception as ex:
@@ -160,8 +216,14 @@ def _():
                 print(ex)
         elif user['user_role'] == 'admin':
             try:
-                q = db.execute("SELECT * FROM items ORDER BY item_created_at LIMIT 0, ?", (x.ITEMS_PER_PAGE,))                
-                items = q.fetchall()
+                q = db.execute(f""" SELECT * FROM items_images 
+                                    INNER JOIN items ON items_images.item_fk  = items.item_pk  
+                                    ORDER BY item_created_at 
+                                    
+                            """)              
+                rows = q.fetchall()
+
+                items = x.group_images(rows)
                 profile_template = template("profile_admin.html", is_logged=True,user=user, items=items)
             except Exception as ex:
                 print("############   error in fetching admin items   ****************:")
@@ -170,6 +232,9 @@ def _():
             profile_template = template("profile_customer.html", is_logged=True,user=user)
 
 
+
+
+        
       
 
         return profile_template
@@ -730,7 +795,6 @@ def _():
     try:
         item_pk = uuid.uuid4().hex
         item_name = x.validate_item_name()
-        item_splash_image = "x.validate_item_images()"
         item_lat = random.uniform(55.615, 55.727)
         item_lon = random.uniform(12.451, 12.650)
         item_stars = 5
@@ -746,23 +810,24 @@ def _():
         item_images = x.validate_item_images()
 
 
-        image_pk =  uuid.uuid4().hex
+        
 
 
            # Process each image, rename it, save it, and store just the filename in the database
         for index, image in enumerate(item_images, start=1):
+            image_pk =  uuid.uuid4().hex
             filename = f"{item_pk}_{index}.{image.filename.split('.')[-1]}"
             path = f"images/{filename}"
             image.save(path)  # Save the image with the new filename
 
             # Insert the image filename into the item_images table (without path)
-            db.execute("INSERT INTO items_images (image_pk,item_fk, image_created_at) VALUES (?, ?,?)", (image_pk,item_pk, 0))
+            db.execute("INSERT INTO items_images (image_pk,image_url,item_fk, image_created_at) VALUES (?,?, ?,?)", (image_pk,filename,item_pk, 0))
             db.commit()
 
         print("##############***********w**'##################")
-        print(item_splash_image)
-        q = db.execute("INSERT INTO items (item_pk, item_name, item_splash_image, item_lat, item_lon, item_stars, item_price_per_night, item_created_at, item_updated_at, item_owner_fk) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
-               (item_pk, item_name, item_splash_image, item_lat, item_lon, item_stars, item_price_per_night, item_created_at, item_updated_at, item_owner_fk))
+        print(item_images)
+        q = db.execute("INSERT INTO items (item_pk, item_name, item_lat, item_lon, item_stars, item_price_per_night, item_created_at, item_updated_at, item_owner_fk) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", 
+               (item_pk, item_name, item_lat, item_lon, item_stars, item_price_per_night, item_created_at, item_updated_at, item_owner_fk))
         db.commit()
             
         return item_name
@@ -771,26 +836,6 @@ def _():
     finally:
         pass
 
-
-
-###############################################
-ITEM_IMAGES_MIN = 1
-ITEM_IMAGES_MAX = 5
-ITEM_IMAGE_MAX_SIZE = 1024 * 1024 * 5 # 5MB
-
-
-def validate_item_images():
-    item_images = request.files.getall("item_splash_image")
-
-    print(item_images)
-
-    if len(item_images) == 0 or len(item_images) < ITEM_IMAGES_MIN or len(item_images) > ITEM_IMAGES_MAX:
-        raise Exception(f"Invalid number of images, must be between {ITEM_IMAGES_MIN} and {ITEM_IMAGES_MAX}", 400)
-
-    allowed_extensions = ['.png', '.jpg', '.webp']
-    for image in item_images:
-        if not pathlib.Path(image.filename).suffix.lower() in allowed_extensions:
-            raise Exception("Invalid image extension", 400)
 
 
  

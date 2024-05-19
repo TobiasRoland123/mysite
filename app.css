@@ -622,6 +622,10 @@ video {
   margin-right: auto;
 }
 
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
 .ml-auto {
   margin-left: auto;
 }
@@ -704,6 +708,10 @@ video {
 
 .max-w-96 {
   max-width: 24rem;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 
 .grid-cols-\[1fr_20fr_5fr\] {

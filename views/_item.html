@@ -1,6 +1,8 @@
 <div class="item">
-    <img src="/images/{{item['item_splash_image']}}" 
-    class="w-full h-48 aspect-square object-cover rounded-lg">
+    % for image_url in item['item_images']:
+    <img alt="" src="/images/{{image_url}}"
+        class="w-full h-48 aspect-square object-cover rounded-lg cursor-pointer mb-2">
+    % end
     <div class="flex justify-between mt-2">
         <span>
             {{item["item_name"]}}
