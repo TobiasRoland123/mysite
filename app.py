@@ -859,13 +859,27 @@ def _(item_pk):
         item_updated_at = int(time.time())
 
       
-
+    
          # Update item details
         db.execute("""
             UPDATE items
             SET item_name = ?, item_price_per_night = ?, item_updated_at = ?
             WHERE item_pk = ?
         """, (item_name, item_price, item_updated_at, item_pk))
+
+
+        if item_new_images != "no-image":
+
+            # Process each new image, rename it, save it, and store the filename in the database
+            for image in item_new_images:
+                filename = f"{item_pk}_{uuid.uuid4().hex}.{image.filename.split('.')[-1]}"
+                image_pk = uuid.uuid4().hex
+                path = f"images/{filename}"
+                image.save(path)  # Save the image with the new filename
+
+                # Insert the image filename into the item_images table (without path)
+                db.execute("INSERT INTO items_images (image_pk, image_url, item_fk, image_created_at) VALUES (?, ?,?,?)", (image_pk,filename, item_pk, 0))
+       
         db.commit()
 
         return item_pk
