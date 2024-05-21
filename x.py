@@ -441,8 +441,9 @@ ITEM_IMAGE_MAX_SIZE = 1024 * 1024 * 5 # 5MB
 def validate_item_images_no_image_ok():
     item_splash_images = request.files.getall("item_splash_images")
         
-
+    print("#################  no_image_ok  ###############################")
     print(item_splash_images)
+    print("length of item_splash_images:", len(item_splash_images))
     for image in item_splash_images:
         if pathlib.Path(image.filename).suffix.lower() == "":
             return "no-image"

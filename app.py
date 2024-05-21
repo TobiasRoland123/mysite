@@ -897,13 +897,17 @@ def _(image_url):
         user= x.validate_user_logged()
         db = x.db()
 
-        image_row = db.execute("SELECT * FROM items_images WHERE image_url = ?", (image_url,)).fetchall()
-        db.commit()
-
         try:
-            item = db.execute("SELECT * FROM items WHERE item_pk = ? ",(image_row['item_fk'],)).fetchall()
+            image_row = db.execute("SELECT * FROM items_images WHERE image_url = ?", (image_url,)).fetchone()
+            if image_row is None:
+                raise Exception("Image not found", 404)
+
+            item = db.execute("SELECT * FROM items WHERE item_pk = ?", (image_row['item_fk'],)).fetchone()
+            if item is None:
+                raise Exception("Item not found", 404)
         except Exception as ex:
             print(ex)
+            return
 
 
         if item['item_owner_fk'] == user['user_pk']:
