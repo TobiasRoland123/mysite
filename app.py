@@ -8,6 +8,7 @@ import credentials
 import uuid
 import time
 import random
+from pathlib import Path
 
 
 
@@ -842,7 +843,7 @@ def _(item_pk):
         if user['user_role'] == "admin":
             pass
         elif user['user_role'] =='partner':
-            x.validate_user_has_rights(user, item_pk)
+            x.validate_user_has_rights_by_item_pk(user, item_pk)
         else:
             raise Exception("User does not have the right to edit this property")
         
@@ -888,6 +889,46 @@ def _(item_pk):
         print(ex)
     finally:
         if "db" in locals(): db.close()
+
+
+@post("/delete_image/<image_url>")
+def _(image_url):
+    try:
+        user= x.validate_user_logged()
+        db = x.db()
+
+        image_row = db.execute("SELECT * FROM items_images WHERE image_url = ?", (image_url,)).fetchall()
+        db.commit()
+
+        try:
+            item = db.execute("SELECT * FROM items WHERE item_pk = ? ",(image_row['item_fk'],)).fetchall()
+        except Exception as ex:
+            print(ex)
+
+
+        if item['item_owner_fk'] == user['user_pk']:
+            path = Path(f"images/{image_url}")
+
+            print("#############  path #########################")
+            print(path)
+        
+            if path.exists():
+                path.unlink()
+                print("Image deleted successfully.")
+            else:
+                print("Image file not found.")
+
+            q = db.execute("DELETE FROM items_images WHERE image_url = ?", (image_url,))
+
+            db.commit()
+            return f"{image_url} has been deleted"
+        else:
+            raise Exception("User does not have the right to delete this image", 403)
+        
+    except Exception as ex:
+        print(ex)
+    finally:
+        pass
 
 ##############################
 try:

@@ -85,7 +85,7 @@ def validate_logged():
 
 ##############################
 
-def validate_user_has_rights(user, item_pk):
+def validate_user_has_rights_by_item_pk(user, item_pk):
     database = db()
     q = database.execute("SELECT * FROM items WHERE item_pk = ?", (item_pk,))
     item = q.fetchone()
@@ -94,6 +94,10 @@ def validate_user_has_rights(user, item_pk):
         return True
     else:
         raise Exception("You do not have the rights to do that", 400)
+
+
+
+
 
 
 ##############################
@@ -454,3 +458,6 @@ def validate_item_images_no_image_ok():
 
 
     return item_splash_images
+
+
+
