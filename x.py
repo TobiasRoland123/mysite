@@ -84,6 +84,19 @@ def validate_logged():
 
 
 ##############################
+
+def validate_user_has_rights(user, item_pk):
+    database = db()
+    q = database.execute("SELECT * FROM items WHERE item_pk = ?", (item_pk,))
+    item = q.fetchone()
+
+    if user['user_pk'] == item['item_owner_fk']:
+        return True
+    else:
+        raise Exception("You do not have the rights to do that", 400)
+
+
+##############################
 def send_verification_email(from_email, to_email, verification_id):
     try:
 
@@ -375,14 +388,13 @@ def validate_item_name():
 
 ITEM_PRICE_MIN = 0
 ITEM_PRICE_MAX = 20000
-ITEM_PRICE_REGEX = "^(0|[1-9][0-9]{0,3}|1[0-9]{4}|20000)$"
+ITEM_PRICE_REGEX =  "^\d{1,8}(\.\d{1,2})?$" 
 
 def validate_item_price():
 
 
     error = f"price needs to be bwtween {ITEM_NAME_MIN} and {ITEM_NAME_MAX} "
     item_price_per_night = request.forms.get("item_price_per_night", "").strip()
-   
     if not re.match(ITEM_PRICE_REGEX, item_price_per_night): raise Exception(error, 400)
     return item_price_per_night
 
@@ -415,5 +427,30 @@ def validate_item_images():
     return item_splash_images
 
 
+##############################
+
+ITEM_IMAGES_MIN = 0
+ITEM_IMAGES_MAX = 5
+ITEM_IMAGE_MAX_SIZE = 1024 * 1024 * 5 # 5MB
 
 
+def validate_item_images_no_image_ok():
+    item_splash_images = request.files.getall("item_splash_images")
+        
+
+    print(item_splash_images)
+    for image in item_splash_images:
+        if pathlib.Path(image.filename).suffix.lower() == "":
+            return
+
+
+    if len(item_splash_images) == 0 or len(item_splash_images) < ITEM_IMAGES_MIN or len(item_splash_images) > ITEM_IMAGES_MAX:
+        raise Exception(f"Invalid number of images, must be between {ITEM_IMAGES_MIN} and {ITEM_IMAGES_MAX}", 400)
+
+    allowed_extensions = ['.png', '.jpg','.jpeg', '.webp']
+    for image in item_splash_images:
+        if not pathlib.Path(image.filename).suffix.lower() in allowed_extensions:
+            raise Exception("Invalid image extension", 400)
+
+
+    return item_splash_images

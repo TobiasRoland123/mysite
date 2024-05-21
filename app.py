@@ -672,7 +672,7 @@ def _(id):
             </template>
             """
     finally:
-        pass
+        if "db" in locals(): db.close()
 
 
 ##############################
@@ -738,7 +738,7 @@ def _():
         response.status = 303 
         response.set_header('Location', '/login')
     finally:
-        pass
+        if "db" in locals(): db.close()
 
 
 ############################################################
@@ -826,11 +826,55 @@ def _():
             </template>
             """
     finally:
-        pass
+        if "db" in locals(): db.close()
 
 
+########################################################
+@put("/edit_item/<item_pk>")
+def _(item_pk):
 
- 
+    try:
+        user = x.validate_user_logged()
+
+        
+        db = x.db()
+        
+        if user['user_role'] == "admin":
+            pass
+        elif user['user_role'] =='partner':
+            x.validate_user_has_rights(user, item_pk)
+        else:
+            raise Exception("User does not have the right to edit this property")
+        
+        # Fetch existing images from the database
+        old_images = db.execute("SELECT image_url FROM items_images WHERE item_fk = ?", (item_pk,)).fetchall()
+
+        if 1 <= len(old_images) <= 5:
+            item_new_images = x.validate_item_images_no_image_ok()
+        else:
+            item_new_images = x.validate_item_images()
+        item_name = x.validate_item_name()
+        item_price = x.validate_item_price()
+       
+        item_updated_at = int(time.time())
+
+      
+
+         # Update item details
+        db.execute("""
+            UPDATE items
+            SET item_name = ?, item_price_per_night = ?, item_updated_at = ?
+            WHERE item_pk = ?
+        """, (item_name, item_price, item_updated_at, item_pk))
+        db.commit()
+
+        return item_pk
+    except Exception as ex:
+        print("#############################################edit item")
+        print(ex)
+    finally:
+        if "db" in locals(): db.close()
+
 ##############################
 try:
     import production

@@ -43,22 +43,18 @@
 
                 <div>
                     <label for="item_name">Name</label>
-                    <input name="item_name" id="item_name" class="w-full border" type="text" placeholder="name" value="Villa lilla kulla" 
+                    <input name="item_name" id="item_name" class="w-full border" type="text" placeholder="name" value="{{item['item_name']}}" 
                     mix-check="{{x.ITEM_NAME_REGEX}}" 
     
                     >
                 </div>
         
-                <div>
-                    <label for="item_splash_images">Image</label>
-                    <input name="item_splash_images" id="item_splash_images" class="w-full border" multiple type="file" placeholder="splash_image" accept=".png, .jpg, .jpeg, .webp" max="5" min="1">
-                </div>
-        
+               
         
         
                 <div>
                     <label for="item_price_per_night">Price per night</label>
-                    <input name="item_price_per_night" id="item_price_per_night" class="w-full border" type="text" placeholder="Price per night" value=222 >
+                    <input name="item_price_per_night" id="item_price_per_night" class="w-full border" type="text" placeholder="Price per night" value="{{item['item_price_per_night']}}" >
                 </div>
                 <div id="existing-images" class="flex flex-wrap gap-2">
                     % for image_url in item['item_images']:
@@ -68,10 +64,13 @@
                     % end
                 </div>
 
-                <input name="item_images" class="w-full border p-2" type="file" multiple="multiple" accept="image/*"
-                    value="{{item['item_images']}}">
+                <div>
+                    <label for="item_splash_images">Image</label>
+                    <input name="item_splash_images" id="item_splash_images" class="w-full border" multiple type="file" placeholder="splash_image" accept=".png, .jpg, .jpeg, .webp" max="5" min="1">
+                </div>
+        
 
-                <button mix-data="[id='{{item['item_pk']}}_2']" mix-put="/edit_item">
+                <button mix-data="[id='{{item['item_pk']}}']" mix-put="/edit_item/{{item['item_pk']}}">
                     Edit
                 </button>
             </form>
