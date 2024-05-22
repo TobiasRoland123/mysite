@@ -34,12 +34,12 @@
 
         <div class="flex gap-4 ml-auto">
 
-            <a href="/signup" class="{{ get('active_login', '') }}">
-                Signup
-            </a>
+           
 
             %if get("is_logged", False):
             %if is_logged:
+            <a href="/profile" class="{{ get('active_profile', '') }}">
+                Profile</a>
             <a href="/logout"  class="{{ get('active_login', '') }}">
                 Logout
             </a>
@@ -49,6 +49,9 @@
                 </a>
             %end
         %else:
+        <a href="/signup" class="{{ get('active_login', '') }}">
+            Signup
+        </a>
         <a href="/login" class="{{ get('active_login', '') }}">
             Login
             </a>
