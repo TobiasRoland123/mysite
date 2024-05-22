@@ -899,7 +899,7 @@ def _(item_pk):
         if "db" in locals(): db.close()
 
 
-@post("/delete_image/<image_url>")
+@delete("/delete_image/<image_url>")
 def _(image_url):
     try:
         user= x.validate_user_logged()
@@ -948,6 +948,9 @@ def _(image_url):
 @delete('/delete_item/<item_pk>')
 def _(item_pk):
     try:
+        user = x.validate_user_logged()
+        x.validate_user_has_rights_by_item_pk(user, item_pk)
+
         print("item_pk", item_pk)
         db = x.db()
         q = db.execute("DELETE FROM items WHERE item_pk = ?",(item_pk,))
