@@ -1,4 +1,5 @@
 import pathlib
+from io import BytesIO
 # import sys
 # sys.path.insert(0, str(pathlib.Path(__file__).parent.resolve())+"/bottle")
 from bottle import request, response, template
@@ -90,11 +91,13 @@ def validate_user_has_rights_by_item_pk(user, item_pk):
     q = database.execute("SELECT * FROM items WHERE item_pk = ?", (item_pk,))
     item = q.fetchone()
 
-    if user['user_pk'] == item['item_owner_fk']:
-        return True
+    if user['user_role'] != 'admin':    
+        if user['user_pk'] == item['item_owner_fk']:
+            return True
+        else:
+            raise Exception("You do not have the rights to do that", 400)
     else:
-        raise Exception("You do not have the rights to do that", 400)
-
+        return True
 
 
 
@@ -412,13 +415,19 @@ ITEM_IMAGE_MAX_SIZE = 1024 * 1024 * 5 # 5MB
 def validate_item_images():
     try:
         item_splash_images = request.files.getall("item_splash_images")
-        
 
         print(item_splash_images)
         for image in item_splash_images:
             if pathlib.Path(image.filename).suffix.lower() == "":
                 raise Exception("No image file added", 400)
 
+            # Read the file into memory and check its size
+            file_in_memory = BytesIO(image.file.read())
+            if len(file_in_memory.getvalue()) > ITEM_IMAGE_MAX_SIZE:
+                raise Exception("Image size exceeds the maximum allowed size of 5MB", 400)
+
+            # Don't forget to go back to the start of the file if it's going to be read again later
+            image.file.seek(0)
 
         if len(item_splash_images) == 0 or len(item_splash_images) < ITEM_IMAGES_MIN or len(item_splash_images) > ITEM_IMAGES_MAX:
             raise Exception(f"Invalid number of images, must be between {ITEM_IMAGES_MIN} and {ITEM_IMAGES_MAX}", 400)
