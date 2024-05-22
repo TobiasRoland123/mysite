@@ -224,8 +224,18 @@ def _():
 @post("/toogle_item_block")
 def _():
     try:
-        item_id = request.forms.get("item_id", '')
-        return f"""
+       item_id = request.forms.get("item_id", "").strip() 
+       user = x.validate_user_logged()
+       x.validate_user_has_rights_by_item_pk(user, item_id)
+       item_blocked_at = int(time.time())
+
+       db = x.db()
+       q = db.execute("UPDATE items SET item_blocked_at = ? WHERE item_pk = ?",(item_blocked_at, item_id))
+       db.commit()
+
+       x.send_item_blocked_unblocked_email("samueltobiasrolanduyet@gmail.com", item_id)
+
+       return f"""
         <template mix-target="[id='{item_id}']" mix-replace>
 
             <form id="{item_id}">
@@ -250,8 +260,17 @@ def _():
 @post("/toogle_item_unblock")
 def _():
     try:
-        item_id = request.forms.get("item_id", '')
-        return f"""
+       item_id = request.forms.get("item_id", "").strip() 
+       user = x.validate_user_logged()
+       x.validate_user_has_rights_by_item_pk(user, item_id)
+       item_blocked_at = 0
+
+       db = x.db()
+       q = db.execute("UPDATE items SET item_blocked_at = ? WHERE item_pk = ?",(item_blocked_at, item_id))
+       db.commit()
+
+       x.send_item_blocked_unblocked_email("samueltobiasrolanduyet@gmail.com", item_id)
+       return f"""
         <template mix-target="[id='{item_id}']" mix-replace>
 
          <form id="{item_id}">
@@ -776,6 +795,7 @@ def _():
         item_created_at = int(time.time())
         item_updated_at = 0
         item_owner_fk = "01ad74495a114c28b80fd73be024aa7d"
+        item_blocked_at = 0
 
 
         db = x.db()
@@ -801,8 +821,8 @@ def _():
 
         print("##############***********w**'##################")
         print(item_images)
-        q = db.execute("INSERT INTO items (item_pk, item_name, item_lat, item_lon, item_stars, item_price_per_night, item_created_at, item_updated_at, item_owner_fk) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", 
-               (item_pk, item_name, item_lat, item_lon, item_stars, item_price_per_night, item_created_at, item_updated_at, item_owner_fk))
+        q = db.execute("INSERT INTO items (item_pk, item_name, item_lat, item_lon, item_stars, item_price_per_night, item_created_at, item_updated_at, item_owner_fk, item_blocked_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)", 
+               (item_pk, item_name, item_lat, item_lon, item_stars, item_price_per_night, item_created_at, item_updated_at, item_owner_fk, item_blocked_at))
         db.commit()
             
         redirect(request.url)

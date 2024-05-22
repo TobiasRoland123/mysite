@@ -55,7 +55,8 @@ def group_images(rows):
                 'item_stars': row['item_stars'],
                 'item_created_at': row['item_created_at'],
                 'item_updated_at': row['item_updated_at'],
-                'item_images': []
+                'item_images': [],
+                'item_blocked_at': row['item_blocked_at']
                             }
         if row['image_url']:
             items[item_pk]['item_images'].append(row['image_url'])
@@ -279,6 +280,103 @@ def send_user_deleted_email(from_email, to_email):
         return "error"
 
 ##############################
+
+def send_item_blocked_unblocked_email(from_email, item_pk):
+    try:
+
+        database = db()
+        q = database.execute("SELECT * FROM items WHERE item_pk = ?",(item_pk,))
+        item = q.fetchone()
+
+        q_user = database.execute("SELECT * FROM users WHERE user_pk = ?",(item['item_owner_fk'],))
+        user = q_user.fetchone()
+
+        if item['item_blocked_at'] == 0:
+            subject = 'Your property has been unblocked'
+        else:
+            subject ='Your property has been blocked'
+
+        message = MIMEMultipart()
+        message["To"] = from_email
+        message["From"] = user['user_email']
+        message["Subject"] = subject
+        try:
+            import production
+            base_url = "https://samueltobias4343.eu.pythonanywhere.com"
+        except:
+            base_url =   "http://localhost"
+
+
+    
+        email_body_blocked= f""" 
+
+                        <!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                            <meta charset="UTF-8" />
+                            <meta
+                            name="viewport"
+                            content="width=device-width, initial-scale=1.0"
+                            />
+                            <title>Verification Email</title>
+                        </head>
+                        <body>
+                            <h1>Your property {item['item_name']} has been blocked by an admin</h1>
+                            <p>Contact support to get more information about the situation</p>
+
+                        </body>
+                        </html>
+
+             """
+        
+        email_body_unblocked= f""" 
+
+                        <!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                            <meta charset="UTF-8" />
+                            <meta
+                            name="viewport"
+                            content="width=device-width, initial-scale=1.0"
+                            />
+                            <title>Verification Email</title>
+                        </head>
+                        <body>
+                            <h1>Your property {item['item_name']} has been unblocked by an admin</h1>
+                            <p>Go to your profile page to see your property</p>
+
+                        </body>
+                        </html>
+
+             """
+        
+
+        if item['item_blocked_at'] == 0:
+            email_body = email_body_unblocked
+        else:
+            email_body = email_body_blocked
+
+        messageText = MIMEText(email_body, 'html')
+        message.attach(messageText)
+ 
+        email = from_email
+        password = 'sxakvggwacukkdmk'
+ 
+        server = smtplib.SMTP('smtp.gmail.com:587')
+        server.ehlo('Gmail')
+        server.starttls()
+        server.login(email,password)
+        from_email = from_email
+        to_email  = user['user_email']
+        server.sendmail(from_email,to_email,message.as_string())
+ 
+        server.quit()
+    except Exception as ex:
+        print(ex)
+        return "error"
+    
+
+#########################################
 
 USER_ID_LEN = 32
 USER_ID_REGEX = "^[a-f0-9]{32}$"

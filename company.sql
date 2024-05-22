@@ -37,7 +37,7 @@ SELECT * FROM users
 
 DELETE FROM users WHERE user_username != 'johndoe';
 
-
+UPDATE users SET user_deleted_at = 0 WHERE user_pk = '2132b02480194efe9d20096682d823b2'
 
 ###############################################################################################################
 
@@ -53,21 +53,22 @@ CREATE TABLE items(
     item_created_at         INTEGER,
     item_updated_at         INTEGER,
     item_owner_fk           TEXT,
+    item_blocked_at         INTEGER,
     PRIMARY KEY(item_pk)
 ) WITHOUT ROWID;
 
 INSERT INTO items VALUES
-("5dbce622fa2b4f22a6f6957d07ff4951", "Christiansborg Palace", 55.6761, 12.5770, 5, 2541, 1, 0,"01ad74495a114c28b80fd73be024aa7d"),
+("5dbce622fa2b4f22a6f6957d07ff4951", "Christiansborg Palace", 55.6761, 12.5770, 5, 2541, 1, 0,"01ad74495a114c28b80fd73be024aa7d",0),
 
-("5dbce622fa2b4f22a6f6957d07ff4952", "Tivoli Gardens", 55.6736, 12.5681, 4.97, 985, 2, 0,"d11854217ecc42b2bb17367fe33dc8f4"),
-("5dbce622fa2b4f22a6f6957d07ff4953", "Nyhavn", 55.6794, 12.5918, 3.45, 429, 3, 0,"d11854217ecc42b2bb17367fe33dc8f4"),
-("5dbce622fa2b4f22a6f6957d07ff4954", "The Little Mermaid statue", 55.6929, 12.5998, 4, 862, 4, 0,"d11854217ecc42b2bb17367fe33dc8f4"),
-("5dbce622fa2b4f22a6f6957d07ff4955", "Amalienborg Palace", 55.6846, 12.5949, 2.67, 1200, 5, 0,"d11854217ecc42b2bb17367fe33dc8f4"),
-("5dbce622fa2b4f22a6f6957d07ff4956", "Copenhagen Opera House",  55.6796, 12.6021, 4.57, 1965, 6,0 ,"d11854217ecc42b2bb17367fe33dc8f4"),
-("5dbce622fa2b4f22a6f6957d07ff4957", "Rosenborg Castle", 55.6867, 12.5734, 4, 1700, 7, 0,"d11854217ecc42b2bb17367fe33dc8f4"),
-("5dbce622fa2b4f22a6f6957d07ff4958", "The National Museum of Denmark", 55.6772, 12.5784, 5, 2100, 8, 0,"d11854217ecc42b2bb17367fe33dc8f4"),
-("5dbce622fa2b4f22a6f6957d07ff4959", "Church of Our Saviour", 55.6732, 12.5986, 4.3, 985, 9, 0,"d11854217ecc42b2bb17367fe33dc8f4"),
-("5dbce622fa2b4f22a6f6957d07ff4910", "Round Tower",  55.6813, 12.5759, 4.8, 1200, 10, 0,"d11854217ecc42b2bb17367fe33dc8f4");
+("5dbce622fa2b4f22a6f6957d07ff4952", "Tivoli Gardens", 55.6736, 12.5681, 4.97, 985, 2, 0,"d11854217ecc42b2bb17367fe33dc8f4",0),
+("5dbce622fa2b4f22a6f6957d07ff4953", "Nyhavn", 55.6794, 12.5918, 3.45, 429, 3, 0,"d11854217ecc42b2bb17367fe33dc8f4",0),
+("5dbce622fa2b4f22a6f6957d07ff4954", "The Little Mermaid statue", 55.6929, 12.5998, 4, 862, 4, 0,"d11854217ecc42b2bb17367fe33dc8f4",0),
+("5dbce622fa2b4f22a6f6957d07ff4955", "Amalienborg Palace", 55.6846, 12.5949, 2.67, 1200, 5, 0,"d11854217ecc42b2bb17367fe33dc8f4",0),
+("5dbce622fa2b4f22a6f6957d07ff4956", "Copenhagen Opera House",  55.6796, 12.6021, 4.57, 1965, 6,0 ,"d11854217ecc42b2bb17367fe33dc8f4",0),
+("5dbce622fa2b4f22a6f6957d07ff4957", "Rosenborg Castle", 55.6867, 12.5734, 4, 1700, 7, 0,"d11854217ecc42b2bb17367fe33dc8f4",0),
+("5dbce622fa2b4f22a6f6957d07ff4958", "The National Museum of Denmark", 55.6772, 12.5784, 5, 2100, 8, 0,"d11854217ecc42b2bb17367fe33dc8f4",0),
+("5dbce622fa2b4f22a6f6957d07ff4959", "Church of Our Saviour", 55.6732, 12.5986, 4.3, 985, 9, 0,"d11854217ecc42b2bb17367fe33dc8f4",0),
+("5dbce622fa2b4f22a6f6957d07ff4910", "Round Tower",  55.6813, 12.5759, 4.8, 1200, 10, 0,"d11854217ecc42b2bb17367fe33dc8f4",0);
 
 -- (page_number - 1) * items_per_page
 -- (1 - 1) * 3 = 10 1 2
@@ -90,6 +91,7 @@ LIMIT 9,3;
 SELECT * FROM items 
 ORDER BY item_created_at
 LIMIT 3 OFFSET 9;
+
 
 
 

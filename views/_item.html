@@ -17,6 +17,7 @@
             {{item["item_stars"]}}
         </span>
     </div>
+  
     <div>
         <span class="font-medium">
             % price = int(item["item_price_per_night"])
@@ -28,13 +29,46 @@
         </span>
     </div>
 
+
+
+
+    
+
     %if get("is_logged", False):
         %if role == "partner" or role == "admin":
     
-       
-            <button class="mb-2 open-dialog-btn" data-dialog-id="dialog-{{item['item_pk'] }}">
-                Edit details
-            </button>
+       <div class="flex gap-2">
+           
+                <button class="mb-2 open-dialog-btn" data-dialog-id="dialog-{{item['item_pk'] }}">
+                    Edit details
+                </button>
+
+
+                %if role == "admin":
+                <form id="{{item['item_pk']}}">
+                    <input name="item_id" type="text" value="{{item['item_pk']}}" class="hidden">
+                    
+
+                 
+              
+                        % if item['item_blocked_at'] == 0:
+                        <button mix-data="[id='{{item['item_pk']}}']"  mix-post="/toogle_item_block">
+                            Block
+                        </button>
+                        % else:
+                        <button mix-data="[id='{{item['item_pk']}}']" mix-post="/toogle_item_unblock"
+                        >
+                            Unblock
+                        </button>
+                        % end
+
+               
+                
+
+                   
+                
+                </form>
+       </div>
 
             
             <dialog id="dialog-{{item['item_pk']}}" class="rounded-lg p-4 w-[500px]">
@@ -83,24 +117,21 @@
                 Delete property
             </button>
            
+
+           
          
                 <button class="mt-2 close-dialog-btn" data-dialog-id="dialog-{{ item['item_pk'] }}">
                     Close
                 </button>
+
+                
+
+
             </dialog>
     
-        %else:
+
             
-        <form id="{{item['item_pk']}}">
-            <input name="item_id" type="text" value="{{item['item_pk']}}" class="hidden">
-            <button
-                mix-data="[id='{{item['item_pk']}}']"
-                mix-post="/toogle_item_block"
-            >
-                Block
-            </button>
-        
-        </form>
+       
     %end 
 </div>
 
