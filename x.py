@@ -376,6 +376,101 @@ def send_item_blocked_unblocked_email(from_email, item_pk):
         return "error"
     
 
+##############################
+
+def send_user_blocked_unblocked_email(from_email, user_pk):
+    try:
+
+        database = db()
+        q = database.execute("SELECT * FROM users WHERE user_pk = ?",(user_pk,))
+        user = q.fetchone()
+
+       
+        if user['user_blocked_at'] == 0:
+            subject = 'Your Account has been unblocked'
+        else:
+            subject ='Your Account has been blocked'
+
+        message = MIMEMultipart()
+        message["To"] = from_email
+        message["From"] = user['user_email']
+        message["Subject"] = subject
+        try:
+            import production
+            base_url = "https://samueltobias4343.eu.pythonanywhere.com"
+        except:
+            base_url =   "http://localhost"
+
+
+    
+        email_body_blocked= f""" 
+
+                        <!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                            <meta charset="UTF-8" />
+                            <meta
+                            name="viewport"
+                            content="width=device-width, initial-scale=1.0"
+                            />
+                            <title>Verification Email</title>
+                        </head>
+                        <body>
+                            <h1>Your property {user['user_first_name']} has been blocked by an admin</h1>
+                            <p>Contact support to get more information about the situation</p>
+
+                        </body>
+                        </html>
+
+             """
+        
+        email_body_unblocked= f""" 
+
+                        <!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                            <meta charset="UTF-8" />
+                            <meta
+                            name="viewport"
+                            content="width=device-width, initial-scale=1.0"
+                            />
+                            <title>Verification Email</title>
+                        </head>
+                        <body>
+                            <h1>Your property {user['user_first_name']} has been unblocked by an admin</h1>
+                            <p>Go to your profile page to see your property</p>
+
+                        </body>
+                        </html>
+
+             """
+        
+
+        if user['user_blocked_at'] == 0:
+            email_body = email_body_unblocked
+        else:
+            email_body = email_body_blocked
+
+        messageText = MIMEText(email_body, 'html')
+        message.attach(messageText)
+ 
+        email = from_email
+        password = 'sxakvggwacukkdmk'
+ 
+        server = smtplib.SMTP('smtp.gmail.com:587')
+        server.ehlo('Gmail')
+        server.starttls()
+        server.login(email,password)
+        from_email = from_email
+        to_email  = user['user_email']
+        server.sendmail(from_email,to_email,message.as_string())
+ 
+        server.quit()
+    except Exception as ex:
+        print(ex)
+        return "error"
+    
+
 #########################################
 
 USER_ID_LEN = 32

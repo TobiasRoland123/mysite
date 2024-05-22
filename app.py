@@ -196,11 +196,13 @@ def _():
                                     
                             """)              
                 rows = q.fetchall()
+                q_users= db.execute("SELECT * FROM users WHERE user_role != 'admin'")
+                users = q_users.fetchall()
 
                 items = x.group_images(rows)
-                profile_template = template("profile_admin.html", is_logged=True,user=user, items=items, role=user['user_role'])
+                profile_template = template("profile_admin.html", is_logged=True,user=user, items=items, role=user['user_role'], users= users )
             except Exception as ex:
-                print("############   error in fetching admin items   ****************:")
+                print("############   error in fetching admin data   ****************:")
                 print(ex)
         else:
             profile_template = template("profile_customer.html", is_logged=True,user=user , role='customer')
@@ -289,6 +291,79 @@ def _():
     finally:
         if "db" in locals(): db.close()
 
+
+##############################
+@post("/toogle_user_block")
+def _():
+    try:
+       user_id = request.forms.get("user_id", "").strip() 
+       user = x.validate_user_logged()
+       if user['user_role'] != 'admin':
+            raise Exception("Only admin users have rights to block users", 403)
+       user_blocked_at = int(time.time())
+
+       db = x.db()
+       q = db.execute("UPDATE users SET user_blocked_at = ?, user_updated_at = ? WHERE user_pk = ?",(user_blocked_at, user_blocked_at, user_id))
+       db.commit()
+
+       x.send_user_blocked_unblocked_email("samueltobiasrolanduyet@gmail.com", user_id)
+
+       return f"""
+        <template mix-target="[id='{user_id}']" mix-replace>
+
+            <form id="{user_id}">
+
+            <input name="user_id" type="text" value="{user_id}" class="hidden">
+             <button
+            mix-data="[id='{user_id}']"
+            mix-post="/toogle_user_unblock"
+             >
+            Unblock
+        </button>
+
+        </form>
+        </template>
+        """
+    except Exception as ex:
+        pass
+    finally:
+        if "db" in locals(): db.close()
+
+        
+##############################
+@post("/toogle_user_unblock")
+def _():
+    try:
+       user_id = request.forms.get("user_id", "").strip() 
+       user = x.validate_user_logged()
+       if user['user_role'] != 'admin':
+            raise Exception("Only admin users have rights to block users", 403)
+       user_blocked_at = 0
+       user_updated_at = int(time.time())
+
+       db = x.db()
+       q = db.execute("UPDATE users SET user_blocked_at = ?, user_updated_at = ? WHERE user_pk = ?",(user_blocked_at, user_updated_at, user_id))
+       db.commit()
+
+       x.send_user_blocked_unblocked_email("samueltobiasrolanduyet@gmail.com", user_id)
+       return f"""
+        <template mix-target="[id='{user_id}']" mix-replace>
+
+         <form id="{user_id}">
+            <input name="user_id" type="text" value="{user_id}" class="hidden">
+        <button
+            mix-data="[id='{user_id}']"
+            mix-post="/toogle_user_block"
+        >
+           Block
+        </button>
+         </form>
+        </template>
+        """
+    except Exception as ex:
+        pass
+    finally:
+        if "db" in locals(): db.close()
 
 ##############################
 @get("/logout")
