@@ -75,11 +75,14 @@
               
         
 
-                <button mix-data="[id='{{item['item_pk']}}']" mix-put="/edit_item/{{item['item_pk']}}">
+                <button mix-data="[id='{{item['item_pk']}}']" mix-put="/edit_item/{{item['item_pk']}}" class="bg-green-800 opacity-75">
                     Save
-                </button>
+                </button>               
             </form>
-
+            <button mix-data="[id='{{item['item_pk']}}']" mix-delete="/delete_item/{{item['item_pk']}}" class="bg-red-800 opacity-75">
+                Delete property
+            </button>
+           
          
                 <button class="mt-2 close-dialog-btn" data-dialog-id="dialog-{{ item['item_pk'] }}">
                     Close

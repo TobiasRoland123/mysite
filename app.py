@@ -773,7 +773,7 @@ def _():
         item_lon = random.uniform(12.451, 12.650)
         item_stars = 5
         item_price_per_night  = x.validate_item_price()
-        item_created_at = 1
+        item_created_at = int(time.time())
         item_updated_at = 0
         item_owner_fk = "01ad74495a114c28b80fd73be024aa7d"
 
@@ -790,12 +790,13 @@ def _():
            # Process each image, rename it, save it, and store just the filename in the database
         for index, image in enumerate(item_images, start=1):
             image_pk =  uuid.uuid4().hex
+            image_created_at = int(time.time())
             filename = f"{item_pk}_{index}.{image.filename.split('.')[-1]}"
             path = f"images/{filename}"
             image.save(path)  # Save the image with the new filename
 
             # Insert the image filename into the item_images table (without path)
-            db.execute("INSERT INTO items_images (image_pk,image_url,item_fk, image_created_at) VALUES (?,?, ?,?)", (image_pk,filename,item_pk, 0))
+            db.execute("INSERT INTO items_images (image_pk,image_url,item_fk, image_created_at) VALUES (?,?, ?,?)", (image_pk,filename,item_pk, image_created_at))
             db.commit()
 
         print("##############***********w**'##################")
@@ -806,26 +807,8 @@ def _():
             
         redirect(request.url)
     except Exception as ex:
-        try:
-            print(ex)
-            response.status = ex.args[1]
-            return f"""
-            <template mix-target="#toast">
-                <div mix-ttl="3000" class="error">
-                    {ex.args[0]}
-                </div>
-            </template>
-            """
-        except Exception as ex:
-            print(ex)
-            response.status = 500
-            return f"""
-            <template mix-target="#toast">
-                <div mix-ttl="3000" class="error">
-                   System under maintainance
-                </div>
-            </template>
-            """
+         print("########################### create property exception print:")
+         print(ex)
     finally:
         if "db" in locals(): db.close()
 
@@ -845,15 +828,22 @@ def _(item_pk):
         elif user['user_role'] =='partner':
             x.validate_user_has_rights_by_item_pk(user, item_pk)
         else:
-            raise Exception("User does not have the right to edit this property")
+            raise Exception("User does not have the right to edit this property", 403)
         
         # Fetch existing images from the database
         old_images = db.execute("SELECT image_url FROM items_images WHERE item_fk = ?", (item_pk,)).fetchall()
 
-        if 1 <= len(old_images) <= 5:
-            item_new_images = x.validate_item_images_no_image_ok()
+
+        print("####################### ")
+        print("old_images length:", len(old_images))
+
+        if len(old_images) < 5:
+            if 1 <= len(old_images) <= 4:
+                item_new_images = x.validate_item_images_no_image_ok()
+            else:
+                item_new_images = x.validate_item_images()
         else:
-            item_new_images = x.validate_item_images()
+            raise Exception("Property already has the maximum number of images. Please remove an image to add new ones.", 400)
         item_name = x.validate_item_name()
         item_price = x.validate_item_price()
        
@@ -885,8 +875,26 @@ def _(item_pk):
 
         return item_pk
     except Exception as ex:
-        print("#############################################edit item")
-        print(ex)
+        try:
+            print(ex)
+            response.status = ex.args[1]
+            return f"""
+            <template mix-target="#toast">
+                <div mix-ttl="3000" class="error">
+                    {ex.args[0]}
+                </div>
+            </template>
+            """
+        except Exception as ex:
+            print(ex)
+            response.status = 500
+            return f"""
+            <template mix-target="#toast">
+                <div mix-ttl="3000" class="error">
+                   System under maintainance
+                </div>
+            </template>
+            """
     finally:
         if "db" in locals(): db.close()
 
@@ -932,7 +940,23 @@ def _(image_url):
     except Exception as ex:
         print(ex)
     finally:
-        pass
+        if db in locals(): db.close()
+
+
+
+########################################################
+@delete('/delete_item/<item_pk>')
+def _(item_pk):
+    try:
+        print("item_pk", item_pk)
+        db = x.db()
+        q = db.execute("DELETE FROM items WHERE item_pk = ?",(item_pk,))
+        db.commit()
+        return item_pk
+    except Exception as ex:
+        print(ex)
+    finally:
+        if db in locals(): db.close()
 
 ##############################
 try:
