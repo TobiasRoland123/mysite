@@ -1,5 +1,5 @@
 <div id="items" class="flex flex-col">
-
+<span>{{role}}</span>
     % for item in items:
         %include("_item", role=role if 'role' in locals() else 'not-signed-in')
     % end

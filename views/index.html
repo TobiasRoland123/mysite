@@ -1,4 +1,4 @@
-%include("_header", is_logged=is_logged)
+%include("_header", user=user)
 
 <main class="flex flex-col md:flex-row">
     <div class="w-full h-full">
@@ -27,7 +27,7 @@
         
 
 
-        %include("__item_list", items=items)
+        %include("__item_list", items=items, role=user['user_role'] if user else 'not-signed-in')
     </div>
 
 </main>

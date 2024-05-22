@@ -35,9 +35,10 @@
     
 
     %if get("is_logged", False):
+    
         %if role == "partner" or role == "admin":
     
-       <div class="flex gap-2">
+        <div class="flex gap-2">
            
                 <button class="mb-2 open-dialog-btn" data-dialog-id="dialog-{{item['item_pk'] }}">
                     Edit details
@@ -68,6 +69,7 @@
                    
                 
                 </form>
+                % end
        </div>
 
             
@@ -128,6 +130,34 @@
 
 
             </dialog>
+
+        %else:
+        
+        <form id="{{item['item_pk']}}">
+            <input name="item_id" type="text" value="{{item['item_pk']}}" class="hidden">
+            
+
+         
+      
+                % if item['item_booked_at'] == 0:
+                <button mix-data="[id='{{item['item_pk']}}']"  mix-post="/toogle_item_booked">
+                    Book
+                </button>
+                % else:
+                <button mix-data="[id='{{item['item_pk']}}']" mix-post="/toogle_item_unbook"
+                >
+                    Unbook
+                </button>
+                % end
+
+       
+        
+
+           
+        
+        </form>
+            
+        % end
     
 
             

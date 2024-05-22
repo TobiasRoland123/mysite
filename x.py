@@ -56,7 +56,8 @@ def group_images(rows):
                 'item_created_at': row['item_created_at'],
                 'item_updated_at': row['item_updated_at'],
                 'item_images': [],
-                'item_blocked_at': row['item_blocked_at']
+                'item_blocked_at': row['item_blocked_at'],
+                'item_booked_at': row['item_booked_at']
                             }
         if row['image_url']:
             items[item_pk]['item_images'].append(row['image_url'])

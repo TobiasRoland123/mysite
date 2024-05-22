@@ -54,7 +54,7 @@ def _():
     try:
         db = x.db()
         # q = db.execute("SELECT * FROM items ORDER BY item_created_at LIMIT 0, ?", (x.ITEMS_PER_PAGE,))
-        q = db.execute("SELECT * FROM items_images INNER JOIN items ON items_images.item_fk  = items.item_pk LIMIT 0, ?", (x.ITEMS_PER_PAGE,))
+        q = db.execute("SELECT * FROM items_images INNER JOIN items ON items_images.item_fk  = items.item_pk WHERE item_blocked_at = 0 LIMIT 0, ?", (x.ITEMS_PER_PAGE,))
         
         # return "x"
         rows = q.fetchall()
@@ -66,14 +66,14 @@ def _():
         # q_images = db.execute("SELECT * FROM items_images ORDER BY image_created_at ")
         # images = q_images.fetchall()
         print(items)
-        is_logged = False
+        user = False
 
         try:
-            x.validate_user_logged()
-            is_logged =True
+            user= x.validate_user_logged()
+            
         except:
             pass
-        return template("index.html", items=items,  mapbox_token=credentials.mapbox_token, is_logged=is_logged)
+        return template("index.html", items=items,  mapbox_token=credentials.mapbox_token, user=user)
     except Exception as ex:
         print(ex)
         return ex
@@ -108,9 +108,17 @@ def _(page_number):
                 q = db.execute(f"""SELECT * FROM items_images 
                                     INNER JOIN items ON items_images.item_fk  = items.item_pk
                                     WHERE item_owner_fk = ?
+                                    WHERE item_blocked_at = 0
                                     ORDER BY item_created_at 
                                     LIMIT ? OFFSET {offset}
                             """, (user['user_pk'],x.ITEMS_PER_PAGE,))
+            else:
+                q = db.execute(f"""     SELECT * FROM items_images 
+                                    INNER JOIN items ON items_images.item_fk  = items.item_pk  
+                                    WHERE item_blocked_at = 0
+                                    ORDER BY item_created_at 
+                                    LIMIT ? OFFSET {offset}
+                            """, (x.ITEMS_PER_PAGE,))
         else:
             q = db.execute(f"""     SELECT * FROM items_images 
                                     INNER JOIN items ON items_images.item_fk  = items.item_pk  
@@ -126,8 +134,11 @@ def _(page_number):
         items = x.group_images(rows)        
 
         html = ""
-        for item in items: 
-            html += template("_item", item=item, is_logged=is_logged)
+        for item in items:
+            if is_logged:
+                html += template("_item", item=item, is_logged=is_logged, role=user['user_role'])
+            else:
+                html += template("_item", item=item, is_logged=is_logged)
         btn_more = template("__btn_more", page_number=next_page)
         if len(items) < x.ITEMS_PER_PAGE: 
             btn_more = ""
@@ -258,6 +269,10 @@ def _():
     finally:
         if "db" in locals(): db.close()
 
+
+
+
+
 ##############################
 @post("/toogle_item_unblock")
 def _():
@@ -282,6 +297,78 @@ def _():
             mix-post="/toogle_item_block"
         >
            Block
+        </button>
+         </form>
+        </template>
+        """
+    except Exception as ex:
+        pass
+    finally:
+        if "db" in locals(): db.close()
+
+##############################
+@post("/toogle_item_booked")
+def _():
+    try:
+       item_id = request.forms.get("item_id", "").strip() 
+       user = x.validate_user_logged()
+       if user['user_role'] != 'customer':
+            raise Exception("Only customers can book properties", 403)
+       item_booked_at = int(time.time())
+
+       db = x.db()
+       q = db.execute("UPDATE items SET item_booked_at = ? WHERE item_pk = ?",(item_booked_at, item_id))
+       db.commit()
+
+       x.send_item_blocked_unblocked_email("samueltobiasrolanduyet@gmail.com", item_id)# TODO: make this into a confirm booking mail
+
+       return f"""
+        <template mix-target="[id='{item_id}']" mix-replace>
+
+            <form id="{item_id}">
+
+            <input name="item_id" type="text" value="{item_id}" class="hidden">
+             <button
+            mix-data="[id='{item_id}']"
+            mix-post="/toogle_item_unbook"
+             >
+            Unbook
+        </button>
+
+        </form>
+        </template>
+        """
+    except Exception as ex:
+        pass
+    finally:
+        if "db" in locals(): db.close()
+
+
+##############################
+@post("/toogle_item_unbook")
+def _():
+    try:
+       item_id = request.forms.get("item_id", "").strip() 
+       user = x.validate_user_logged()
+       
+       item_booked_at = 0
+       if user['user_role'] != 'customer':
+            raise Exception("Only customers can book properties", 403)
+       db = x.db()
+       q = db.execute("UPDATE items SET item_booked_at = ? WHERE item_pk = ?",(item_booked_at, item_id))
+       db.commit()
+
+       x.send_item_blocked_unblocked_email("samueltobiasrolanduyet@gmail.com", item_id)
+       return f"""
+        <template mix-target="[id='{item_id}']" mix-replace>
+
+         <form id="{item_id}">
+            <input name="item_id" type="text" value="{item_id}" class="hidden">
+        <button
+            mix-data="[id='{item_id}']"
+            mix-post="/toogle_item_booked"
+        >
+           Book
         </button>
          </form>
         </template>

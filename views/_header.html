@@ -36,8 +36,8 @@
 
            
 
-            %if get("is_logged", False):
-            %if is_logged:
+            %if get("user", False):
+            %if user:
             <a href="/profile" class="{{ get('active_profile', '') }}">
                 Profile</a>
             <a href="/logout"  class="{{ get('active_login', '') }}">
