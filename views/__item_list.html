@@ -1,6 +1,6 @@
 <div id="items" class="flex flex-col">
     % for item in items:
-        %include("_item", role=role if 'role' in locals() else 'not-signed-in')
+        %include("_item", role=role if 'role' in locals() else 'not-signed-in, is_logged=user')
     % end
 </div>
 %include("__btn_more", page_number=2)
