@@ -67,13 +67,14 @@ def _():
         # images = q_images.fetchall()
         print(items)
         user = False
-
+        is_logged = False
         try:
             user= x.validate_user_logged()
+            is_logged = True
             
         except:
             pass
-        return template("index.html", items=items,  mapbox_token=credentials.mapbox_token, user=user)
+        return template("index.html", items=items,  mapbox_token=credentials.mapbox_token, user=user, is_logged=is_logged)
     except Exception as ex:
         print(ex)
         return ex

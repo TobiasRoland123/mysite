@@ -27,7 +27,7 @@
         
 
 
-        %include("__item_list", items=items, role=user['user_role'] if user else 'not-signed-in')
+        %include("__item_list", items=items, role=user['user_role'] if user else 'not-signed-in', is_logged=is_logged)
     </div>
 
 </main>
