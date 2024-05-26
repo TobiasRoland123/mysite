@@ -963,35 +963,59 @@ def _():
 
         db = x.db()
 
-            # Images
+        # Images
         item_images = x.validate_item_images()
-
-
-        
-
-
-           # Process each image, rename it, save it, and store just the filename in the database
-        for index, image in enumerate(item_images, start=1):
-            image_pk =  uuid.uuid4().hex
-            image_created_at = int(time.time())
-            filename = f"{item_pk}_{index}.{image.filename.split('.')[-1]}"
-            path = f"images/{filename}"
-            image.save(path)  # Save the image with the new filename
-
-            # Insert the image filename into the item_images table (without path)
-            db.execute("INSERT INTO items_images (image_pk,image_url,item_fk, image_created_at) VALUES (?,?, ?,?)", (image_pk,filename,item_pk, image_created_at))
-            db.commit()
-
-        print("##############***********w**'##################")
+        print("##### this is images ##########")
         print(item_images)
-        q = db.execute("INSERT INTO items (item_pk, item_name, item_lat, item_lon, item_stars, item_price_per_night, item_created_at, item_updated_at, item_owner_fk, item_blocked_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)", 
-               (item_pk, item_name, item_lat, item_lon, item_stars, item_price_per_night, item_created_at, item_updated_at, item_owner_fk, item_blocked_at))
-        db.commit()
+       
+
+
+        if item_images:
+                # Process each image, rename it, save it, and store just the filename in the database
+            for index, image in enumerate(item_images, start=1):
+                image_pk =  uuid.uuid4().hex
+                image_created_at = int(time.time())
+                filename = f"{item_pk}_{index}.{image.filename.split('.')[-1]}"
+                path = f"images/{filename}"
+                image.save(path)  # Save the image with the new filename
+
+                # Insert the image filename into the item_images table (without path)
+                db.execute("INSERT INTO items_images (image_pk,image_url,item_fk, image_created_at) VALUES (?,?, ?,?)", (image_pk,filename,item_pk, image_created_at))
+                db.commit()
+
+                print("##############***********w**'##################")
+                print(item_images)
+                q = db.execute("INSERT INTO items (item_pk, item_name, item_lat, item_lon, item_stars, item_price_per_night, item_created_at, item_updated_at, item_owner_fk, item_blocked_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)", 
+                    (item_pk, item_name, item_lat, item_lon, item_stars, item_price_per_night, item_created_at, item_updated_at, item_owner_fk, item_blocked_at))
+                db.commit()
             
-        redirect(request.url)
+                return """
+                    <template mix-redirect="/profile">
+
+                    </template>
+                """
     except Exception as ex:
-         print("########################### create property exception print:")
-         print(ex)
+        print("########################### create property exception print:")
+        try:
+            print(ex)
+            response.status = ex.args[1]
+            return f"""
+            <template mix-target="#toast">
+                <div mix-ttl="3000" class="error">
+                    {ex.args[0]}
+                </div>
+            </template>
+            """
+        except Exception as ex:
+            print(ex)
+            response.status = 500
+            return f"""
+            <template mix-target="#toast">
+                <div mix-ttl="3000" class="error">
+                   System under maintainance
+                </div>
+            </template>
+            """
     finally:
         if "db" in locals(): db.close()
 
@@ -1138,7 +1162,12 @@ def _(item_pk):
         db = x.db()
         q = db.execute("DELETE FROM items WHERE item_pk = ?",(item_pk,))
         db.commit()
-        return item_pk
+        
+        return """
+            <template mix-redirect="/profile">
+
+            </template>
+        """
     except Exception as ex:
         print(ex)
     finally:

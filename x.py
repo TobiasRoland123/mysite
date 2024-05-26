@@ -607,18 +607,19 @@ ITEM_IMAGE_MAX_SIZE = 1024 * 1024 * 5 # 5MB
 
 
 def validate_item_images():
-    try:
+
         item_splash_images = request.files.getall("item_splash_images")
 
         print(item_splash_images)
         for image in item_splash_images:
             if pathlib.Path(image.filename).suffix.lower() == "":
                 raise Exception("No image file added", 400)
-
+                
             # Read the file into memory and check its size
             file_in_memory = BytesIO(image.file.read())
             if len(file_in_memory.getvalue()) > ITEM_IMAGE_MAX_SIZE:
                 raise Exception("Image size exceeds the maximum allowed size of 5MB", 400)
+                
 
             # Don't forget to go back to the start of the file if it's going to be read again later
             image.file.seek(0)
@@ -633,8 +634,7 @@ def validate_item_images():
             
         
         return item_splash_images
-    except Exception as ex:
-        print(ex)
+    
 
     
 
