@@ -37,6 +37,8 @@ SELECT * FROM users
 
 DELETE FROM users WHERE user_username != 'johndoe';
 
+DELETE FROM users WHERE user_email== 'samu1493@stud.kea.dk';
+
 UPDATE users SET user_deleted_at = 0 WHERE user_pk = '2132b02480194efe9d20096682d823b2'
 
 ###############################################################################################################

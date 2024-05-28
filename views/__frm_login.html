@@ -1,8 +1,12 @@
 %import x
 
 <form id="frm_login" autocomplete="off" class="flex flex-col gap-2 w-full mx-4 md:w-1/2">
-    <input name="user_email" class="w-full border" type="text" placeholder="email" value="" 
+
+    <label for="user_email">Email</label>
+    <input name="user_email" id="user_email" class="w-full border" type="text" placeholder="email" value="" 
         mix-check="{{x.EMAIL_REGEX}}">
+
+        <label for="user_password">Password</label>
     <input name="user_password" class="w-full border" type="password" placeholder="password" value=""
         mix-check="{{x.USER_PASSWORD_REGEX}}">
     <button class=""

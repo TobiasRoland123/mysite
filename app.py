@@ -717,23 +717,34 @@ def _():
 
         updated_user = {**user, "user_email": user_email, "user_username": user_username, "user_first_name": user_first_name, "user_last_name": user_last_name, "user_updated_at": user_updated_at}
 
-        print("############### updated_user: ", updated_user)
-        print(updated_user)
-
         try:
             is_cookie_https = True
         except:
             is_cookie_https = False        
         response.set_cookie("user", updated_user, secret=x.COOKIE_SECRET, httponly=True, secure=is_cookie_https)
 
-
-       
-        redirect(request.url)
-
-        
+        return f"""
+            <template mix-target="#toast">
+                <div mix-ttl="3000" class="ok">
+                    User updated successfully 
+                </div>
+            </template>
+            """      
         
     except Exception as ex:    
-        print(ex)
+        try:
+            print(ex)
+            response.status = ex.args[1]
+            return f"""
+            <template mix-target="#toast">
+                <div mix-ttl="3000" class="error">
+                    {ex.args[0]}
+                </div>
+            </template>
+            """
+        except Exception as ex:
+            print(ex)
+            response.status = 500
     finally:
         if "db" in locals(): db.close()
 
@@ -753,18 +764,45 @@ def _():
 def _():
     try:
         user_email = x.validate_user_email()
+        try:
+            db = x.db()
+            q = db.execute("SELECT * FROM users WHERE user_email = ? LIMIT 1", (user_email,))
+            user = q.fetchone()
+            x.send_reset_password_email("samueltobiasrolanduyet@gmail.com", user_email, user["user_pk"])
+        except Exception as ex:
+            raise Exception('Email not in system', 400) 
+        
 
-        db = x.db()
-        q = db.execute("SELECT * FROM users WHERE user_email = ? LIMIT 1", (user_email,))
-        user = q.fetchone()
-
-        x.send_reset_password_email("samueltobiasrolanduyet@gmail.com", user_email, user["user_pk"])
 
 
-
-        return f"{user}"
+        return f"""
+            <template mix-target="#toast">
+                <div mix-ttl="3000" class="ok">
+                    An email has been send to {user_email}
+                </div>
+            </template>
+            """
     except Exception as ex:
-        print(ex)
+        try:
+            print(ex)
+            response.status = ex.args[1]
+            return f"""
+            <template mix-target="#toast">
+                <div mix-ttl="3000" class="error">
+                    {ex.args[0]}
+                </div>
+            </template>
+            """
+        except Exception as ex:
+            print(ex)
+            response.status = 500
+            return f"""
+            <template mix-target="#toast">
+                <div mix-ttl="3000" class="error">
+                   System under maintainance
+                </div>
+            </template>
+            """
     finally:
         if "db" in locals(): db.close()
 
