@@ -3,6 +3,7 @@ from io import BytesIO
 # import sys
 # sys.path.insert(0, str(pathlib.Path(__file__).parent.resolve())+"/bottle")
 from bottle import request, response, template
+import requests
 import re
 import sqlite3
 from email.mime.multipart import MIMEMultipart
@@ -667,6 +668,27 @@ def validate_item_images_no_image_ok():
 
 
     return item_splash_images
+
+
+
+
+
+
+###########################################################################################
+## ARANGODB
+
+def db_arango(query):
+    try:
+        url = "http://arangodb:8529/_api/cursor"
+        res = requests.post( url, json = query )
+        print(res)
+        print(res.text)
+        return res.json()
+    except Exception as ex:
+        print("#"*50)
+        print(ex)
+    finally:
+        pass
 
 
 
