@@ -42,9 +42,7 @@
     
         <div class="flex gap-2">
            
-                <button class="mb-2 open-dialog-btn" data-dialog-id="dialog-{{item['item_pk'] }}">
-                    Edit details
-                </button>
+                
 
 
                 %if role == "admin":
@@ -71,6 +69,11 @@
                    
                 
                 </form>
+
+                %else:
+                <button class="mb-2 open-dialog-btn" data-dialog-id="dialog-{{item['item_pk'] }}">
+                    Edit details
+                </button>
                 % end
        </div>
 

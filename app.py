@@ -987,6 +987,10 @@ def _():
 @post("/create_property")
 def _():
     try:
+
+        user = x.validate_user_logged()
+
+
         item_pk = uuid.uuid4().hex
         item_name = x.validate_item_name()
         item_lat = random.uniform(55.615, 55.727)
@@ -995,8 +999,9 @@ def _():
         item_price_per_night  = x.validate_item_price()
         item_created_at = int(time.time())
         item_updated_at = 0
-        item_owner_fk = "01ad74495a114c28b80fd73be024aa7d"
+        item_owner_fk = user['user_pk']
         item_blocked_at = 0
+        item_booked_at = 0
 
 
         db = x.db()
@@ -1023,8 +1028,8 @@ def _():
 
                 print("##############***********w**'##################")
                 print(item_images)
-                q = db.execute("INSERT INTO items (item_pk, item_name, item_lat, item_lon, item_stars, item_price_per_night, item_created_at, item_updated_at, item_owner_fk, item_blocked_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)", 
-                    (item_pk, item_name, item_lat, item_lon, item_stars, item_price_per_night, item_created_at, item_updated_at, item_owner_fk, item_blocked_at))
+                q = db.execute("INSERT INTO items (item_pk, item_name, item_lat, item_lon, item_stars, item_price_per_night, item_created_at, item_updated_at, item_owner_fk, item_blocked_at, item_booked_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)", 
+                    (item_pk, item_name, item_lat, item_lon, item_stars, item_price_per_night, item_created_at, item_updated_at, item_owner_fk, item_blocked_at, item_booked_at))
                 db.commit()
             
                 return """
@@ -1084,6 +1089,9 @@ def _(item_pk):
 
         if len(old_images) < 5:
             if 1 <= len(old_images) <= 4:
+                item_splash_images = request.files.getall("item_splash_images")
+                print(" ##### item_splash_images from edit property:") 
+                print(item_splash_images)
                 item_new_images = x.validate_item_images_no_image_ok()
             else:
                 item_new_images = x.validate_item_images()
@@ -1091,6 +1099,7 @@ def _(item_pk):
             raise Exception("Property already has the maximum number of images. Please remove an image to add new ones.", 400)
         item_name = x.validate_item_name()
         item_price = x.validate_item_price()
+
        
         item_updated_at = int(time.time())
 
@@ -1118,7 +1127,11 @@ def _(item_pk):
        
         db.commit()
 
-        return item_pk
+        return """
+                    <template mix-redirect="/profile">
+
+                    </template>
+                """
     except Exception as ex:
         try:
             print(ex)

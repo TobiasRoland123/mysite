@@ -656,7 +656,7 @@ def validate_item_images_no_image_ok():
         if pathlib.Path(image.filename).suffix.lower() == "":
             return "no-image"
 
-
+   
     if len(item_splash_images) == 0 or len(item_splash_images) < ITEM_IMAGES_MIN or len(item_splash_images) > ITEM_IMAGES_MAX:
         raise Exception(f"Invalid number of images, must be between {ITEM_IMAGES_MIN} and {ITEM_IMAGES_MAX}", 400)
 
