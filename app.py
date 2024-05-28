@@ -150,7 +150,8 @@ def _(page_number):
         <template mix-target="#more" mix-replace>
             {btn_more}
         </template>
-        <template mix-function="test">{json.dumps(items)}</template>
+        <template mix-function="mapPins">{json.dumps(items)}</template>
+
         """
     except Exception as ex:
         print(ex)

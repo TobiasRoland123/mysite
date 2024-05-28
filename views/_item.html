@@ -1,7 +1,7 @@
 %import x
 
 
-<div class="item min-w-64">
+<div class="item min-w-64" id="item-{{item['item_pk']}}">
     % for image_url in item['item_images']:
    <div class="aspect-square overflow-hidden">
         <img alt="" src="/images/{{image_url}}"
@@ -171,4 +171,4 @@
 </div>
 
 
-<script src="../app.js" defer></script>
+<script src="../popup.js" defer></script>

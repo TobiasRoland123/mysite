@@ -4,23 +4,7 @@
     <div class="w-full h-full">
         <div class="md:fixed w-full  aspect-video md:w-[calc(50%-0.5rem)] md:h-[calc(100%-5rem)] p-2 md:p-0 bg-neutral-100">
             <div id='map' class="w-full h-full"></div>
-            <script>
-              mapboxgl.accessToken = "{{mapbox_token}}"
-              var map = new mapboxgl.Map({
-                container: 'map',
-                style: 'mapbox://styles/mapbox/streets-v11',
-                center: [12.5683, 55.6761],
-                zoom: 12
-              });
-              var marker1 = new mapboxgl.Marker()
-              .setLngLat([12.5781, 55.6867]) // Marker 1 coordinates
-              .addTo(map);
-            
-            var marker2 = new mapboxgl.Marker()
-              .setLngLat([12.5637, 55.6761]) // Marker 2 coordinates
-              .addTo(map);  
-                          
-            </script>
+           
         </div>    
     </div>
     <div class="w-full pb-16 px-4">
@@ -31,6 +15,31 @@
     </div>
 
 </main>
+
+
+<script>
+  mapboxgl.accessToken = "{{mapbox_token}}"
+  let map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v11',
+    center: [12.5683, 55.6761],
+    zoom: 12
+  });
+
+
+  let items = "{{items}}".replace(/&#039;/g, '"');
+  console.log(items)
+
+
+
+  setTimeout(function () {
+    if (typeof mapPins === 'function') {
+      mapPins(items);
+    } else {
+      console.error('mapPins function is not defined');
+    }
+  }, 200);
+</script>
 
 
 %include("_footer")
