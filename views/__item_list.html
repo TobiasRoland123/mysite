@@ -1,4 +1,4 @@
-<div id="items" class="flex flex-col">
+<div id="items" class="flex flex-col lg:flex-row flex-wrap gap-4 justify-evenly">
     % for item in items:
         %include("_item", role=role if 'role' in locals() else 'not-signed-in, is_logged=user')
     % end

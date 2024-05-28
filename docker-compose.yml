@@ -1,4 +1,4 @@
-version: "3.1"
+version: '3.1'
 services:
   python:
     environment:
@@ -6,10 +6,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: bottlesite_container
+    container_name: mysite_container
     ports:
       - 80:80
     volumes:
       - ./:/app
-
-
