@@ -1045,7 +1045,8 @@ def _():
 
         return """
                     <template mix-redirect="/profile">
-
+                       
+              
                     </template>
                 """
     except Exception as ex:
@@ -1202,7 +1203,20 @@ def _(image_url):
             q = db.execute("DELETE FROM items_images WHERE image_url = ?", (image_url,))
 
             db.commit()
-            return f"{image_url} has been deleted"
+
+            return f"""
+            <template mix-target="#toast">
+                <div mix-ttl="3000" class="ok">
+                    image was deleted
+                </div>
+            </template>
+
+            <template  mix-redirect="/profile">
+
+           
+            </template>
+            """
+            
         else:
             raise Exception("User does not have the right to delete this image", 403)
         
