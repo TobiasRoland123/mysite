@@ -1256,7 +1256,12 @@ def _(item_pk):
         print(item_images)        
 
         for image in item_images:
-            path = Path(f"images/{image}")
+            try:
+                import production
+                path = f"mysite/images/{image}"
+            except:
+                print("No production path will be local")
+                path = f"images/{image}"
 
         
             if path.exists():
