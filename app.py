@@ -1021,7 +1021,11 @@ def _():
                 image_pk =  uuid.uuid4().hex
                 image_created_at = int(time.time())
                 filename = f"{item_pk}_{index}.{image.filename.split('.')[-1]}"
-                path = f"../images/{filename}"
+                try:
+                    import production
+                    path = f"mysite/images/{filename}"
+                except:
+                    path = f"/images/{filename}"
                 image.save(path)  # Save the image with the new filename
 
                 # Insert the image filename into the item_images table (without path)
