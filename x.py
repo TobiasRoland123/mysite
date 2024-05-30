@@ -658,8 +658,8 @@ def validate_item_images_no_image_ok():
             return "no-image"
 
    
-    if len(item_splash_images) == 0 or len(item_splash_images) < ITEM_IMAGES_MIN or len(item_splash_images) > ITEM_IMAGES_MAX:
-        raise Exception(f"Invalid number of images, must be between {ITEM_IMAGES_MIN} and {ITEM_IMAGES_MAX}", 400)
+        if len(item_splash_images) == 0 or len(item_splash_images) < ITEM_IMAGES_MIN or len(item_splash_images) > ITEM_IMAGES_MAX:
+            raise Exception(f"Invalid number of images, must be between {ITEM_IMAGES_MIN} and {ITEM_IMAGES_MAX}", 400)
 
     allowed_extensions = ['.png', '.jpg','.jpeg', '.webp']
     for image in item_splash_images:
