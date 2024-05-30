@@ -654,6 +654,8 @@ def validate_item_images_no_image_ok():
     print(item_splash_images)
     print("length of item_splash_images:", len(item_splash_images))
     for image in item_splash_images:
+        print("imagefilename extention:")
+        print(pathlib.Path(image.filename).suffix.lower())
         if pathlib.Path(image.filename).suffix.lower() == "":
             return "no-image"
 
