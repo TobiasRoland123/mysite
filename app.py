@@ -1252,8 +1252,7 @@ def _(item_pk):
         for image_row in image_rows:
             item_images.append(image_row["image_url"])
 
-        print("######################################    item_images:")        
-        print(item_images)        
+            
 
         for image in item_images:
             try:
