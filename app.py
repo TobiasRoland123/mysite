@@ -1025,6 +1025,7 @@ def _():
                     import production
                     path = f"mysite/images/{filename}"
                 except:
+                    print("No production path will be local")
                     path = f"/images/{filename}"
                 image.save(path)  # Save the image with the new filename
 
