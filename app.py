@@ -1258,10 +1258,10 @@ def _(item_pk):
         for image in item_images:
             try:
                 import production
-                path = f"mysite/images/{image}"
+                path = Path(f"mysite/images/{image}")
             except:
                 print("No production path will be local")
-                path = f"images/{image}"
+                path = Path(f"images/{image}")
 
             print("##################### paht delete item:")
             print(path)
