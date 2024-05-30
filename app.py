@@ -1241,8 +1241,30 @@ def _(item_pk):
 
         print("item_pk", item_pk)
         db = x.db()
+        query_image_row= db.execute("SELECT * FROM items_images WHERE item_fk = ?" , (item_pk,))
+        image_rows = query_image_row.fetchall()
+        query_delete_image_rows = db.execute("DELETE FROM items_images WHERE item_fk = ?", (item_pk,))
         q = db.execute("DELETE FROM items WHERE item_pk = ?",(item_pk,))
         db.commit()
+
+
+        item_images = []
+        for image_row in image_rows:
+            item_images.append(image_row["image_url"])
+
+        print("######################################    item_images:")        
+        print(item_images)        
+
+        for image in item_images:
+            path = Path(f"images/{image}")
+
+        
+            if path.exists():
+                path.unlink()
+                print("Image deleted successfully.")
+            else:
+                print("Image file not found.")
+        
         
         return """
             <template mix-redirect="/profile">
