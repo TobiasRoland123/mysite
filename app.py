@@ -1263,7 +1263,8 @@ def _(item_pk):
                 print("No production path will be local")
                 path = f"images/{image}"
 
-        
+            print("##################### paht delete item:")
+            print(path)
             if path.exists():
                 path.unlink()
                 print("Image deleted successfully.")
