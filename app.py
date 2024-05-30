@@ -1131,7 +1131,12 @@ def _(item_pk):
             for image in item_new_images:
                 filename = f"{item_pk}_{uuid.uuid4().hex}.{image.filename.split('.')[-1]}"
                 image_pk = uuid.uuid4().hex
-                path = f"images/{filename}"
+                try:
+                    import production
+                    path = f"mysite/images/{filename}"
+                except:
+                    print("No production path will be local")
+                    path = f"images/{filename}"
                 image.save(path)  # Save the image with the new filename
 
                 # Insert the image filename into the item_images table (without path)
