@@ -1017,12 +1017,11 @@ def _():
         if item_images:
                 # Process each image, rename it, save it, and store just the filename in the database
             for index, image in enumerate(item_images, start=1):
-                images_dir = Path('images/')
-                images_dir.mkdir(exist_ok=True)
+                
                 image_pk =  uuid.uuid4().hex
                 image_created_at = int(time.time())
                 filename = f"{item_pk}_{index}.{image.filename.split('.')[-1]}"
-                path = f"images/{filename}"
+                path = f"../images/{filename}"
                 image.save(path)  # Save the image with the new filename
 
                 # Insert the image filename into the item_images table (without path)
