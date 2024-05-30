@@ -1033,13 +1033,17 @@ def _():
                 db.execute("INSERT INTO items_images (image_pk,image_url,item_fk, image_created_at) VALUES (?,?, ?,?)", (image_pk,filename,item_pk, image_created_at))
                 db.commit()
 
-                print("##############***********w**'##################")
-                print(item_images)
-                q = db.execute("INSERT INTO items (item_pk, item_name, item_lat, item_lon, item_stars, item_price_per_night, item_created_at, item_updated_at, item_owner_fk, item_blocked_at, item_booked_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)", 
-                    (item_pk, item_name, item_lat, item_lon, item_stars, item_price_per_night, item_created_at, item_updated_at, item_owner_fk, item_blocked_at, item_booked_at))
-                db.commit()
-            
-            return """
+            print("##############***********w**'##################")
+            print(item_images)
+            q = db.execute("INSERT INTO items (item_pk, item_name, item_lat, item_lon, item_stars, item_price_per_night, item_created_at, item_updated_at, item_owner_fk, item_blocked_at, item_booked_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)", 
+                (item_pk, item_name, item_lat, item_lon, item_stars, item_price_per_night, item_created_at, item_updated_at, item_owner_fk, item_blocked_at, item_booked_at))
+                
+
+            db.commit()
+            print(f"committed with path:")
+            print(path)
+
+        return """
                     <template mix-redirect="/profile">
 
                     </template>
