@@ -39,11 +39,12 @@ def no_cache():
 
 def group_images(rows):
     # Group images by item_pk
+
+
+    print("############### incomming rows:")
+    print(rows)
     items = {}
 
-
-    print("************* rows in x.group_images ****************")
-    print(rows)
     for row in rows:
         item_pk = row['item_pk']
         if item_pk not in items:

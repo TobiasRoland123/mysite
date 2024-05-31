@@ -54,18 +54,22 @@ def _():
     try:
         db = x.db()
         # q = db.execute("SELECT * FROM items ORDER BY item_created_at LIMIT 0, ?", (x.ITEMS_PER_PAGE,))
-        q = db.execute("SELECT * FROM items_images INNER JOIN items ON items_images.item_fk  = items.item_pk WHERE item_blocked_at = 0 LIMIT 0, ?", (x.ITEMS_PER_PAGE,))
+        q = db.execute("SELECT * FROM items_images INNER JOIN items ON items_images.item_fk  = items.item_pk WHERE item_blocked_at = 0")
         
         # return "x"
         rows = q.fetchall()
 
+
+
         items = x.group_images(rows)
 
 
+        print("**************** outcomming items: ")
+        print(items)
 
         # q_images = db.execute("SELECT * FROM items_images ORDER BY image_created_at ")
         # images = q_images.fetchall()
-        print(items)
+        
         user = False
         is_logged = False
         try:
@@ -107,12 +111,11 @@ def _(page_number):
                             """, (x.ITEMS_PER_PAGE,))
             elif user['user_role'] == "partner":
                 q = db.execute(f"""SELECT * FROM items_images 
-                                    INNER JOIN items ON items_images.item_fk  = items.item_pk
-                                    WHERE item_owner_fk = ?
-                                    WHERE item_blocked_at = 0
-                                    ORDER BY item_created_at 
-                                    LIMIT ? OFFSET {offset}
-                            """, (user['user_pk'],x.ITEMS_PER_PAGE,))
+                    INNER JOIN items ON items_images.item_fk  = items.item_pk
+                    WHERE item_owner_fk = ? AND item_blocked_at = 0
+                    ORDER BY item_created_at 
+                    LIMIT ? OFFSET {offset}
+            """, (user['user_pk'],x.ITEMS_PER_PAGE,))
             else:
                 q = db.execute(f"""     SELECT * FROM items_images 
                                     INNER JOIN items ON items_images.item_fk  = items.item_pk  
@@ -123,8 +126,8 @@ def _(page_number):
         else:
             q = db.execute(f"""     SELECT * FROM items_images 
                                     INNER JOIN items ON items_images.item_fk  = items.item_pk  
-                                    ORDER BY item_created_at 
                                     WHERE item_blocked_at = 0
+                                    ORDER BY item_created_at 
                                     LIMIT ? OFFSET {offset}
                             """, (x.ITEMS_PER_PAGE,))
         rows = q.fetchall()

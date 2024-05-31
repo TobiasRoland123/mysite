@@ -128,3 +128,5 @@ INSERT INTO items_images VALUES
 SELECT * FROM items_images
 
 SELECT * FROM items_images INNER JOIN items ON items_images.item_fk  = items.item_pk;
+
+SELECT * FROM items_images JOIN items ON items_images.item_fk  = items.item_pk WHERE item_blocked_at = 0;
