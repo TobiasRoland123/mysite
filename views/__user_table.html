@@ -1,27 +1,33 @@
 
-<div id="items" class="flex flex-col">
+<div id="users" class="flex flex-col overflow-x-auto my-12  border rounded-lg p-2">
 
     <table>
         <thead>
-            <tr class="text-left">
-                <th >First Name</th>
-                <th>Last Name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Last Updated at</th>
-                <th>Block user</th>
+            <tr class="text-left border-b-2">
+                <th class="border-l-2 pr-2 whitespace-nowrap">
+                     Name</th>
+                <th class="pl-8 border-l-2 pr-2 whitespace-nowrap">
+                    Last Name</th>
+                <th class="pl-8 border-l-2 pr-2 whitespace-nowrap">
+                    Email</th>
+                <th class="pl-8 border-l-2 pr-2 whitespace-nowrap">
+                    Role</th>
+                <th class="pl-8 border-l-2 pr-2 whitespace-nowrap">
+                    Last Updated at</th>
+                <th class="pl-8 border-l-2 pr-2 whitespace-nowrap">
+                    Block user</th>
             </tr>
         </thead>
 
         <tbody>
             % for user in users:
-                <tr>
-                    <td>{{user["user_first_name"]}}</td>
-                    <td>{{user["user_last_name"]}}</td>
-                    <td>{{user["user_email"]}}</td>
-                    <td>{{user["user_role"]}}</td>
-                    <td>{{user["user_updated_at"]}}</td>
-                    <td>
+                <tr class="">
+                    <td class="pr-2">{{user["user_first_name"]}}</td>
+                    <td class="pl-8 pr-2 border-l-2">{{user["user_last_name"]}}</td>
+                    <td class="pl-8 pr-2 border-l-2">{{user["user_email"]}}</td>
+                    <td class="pl-8 pr-2 border-l-2">{{user["user_role"]}}</td>
+                    <td class="pl-8 pr-2 border-l-2">{{user["user_updated_at"]}}</td>
+                    <td class="pl-8 pr-2 border-l-2">
                         <form id="{{user['user_pk']}}">
                             <input name="user_id" type="text" value="{{user['user_pk']}}" class="hidden">
                             
