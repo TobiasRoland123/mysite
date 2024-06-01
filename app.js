@@ -1,17 +1,6 @@
 let markers = {};
 let lastOpenedPopup = null;
 
-function managePopup(popup, marker) {
-  if (lastOpenedPopup && lastOpenedPopup.isOpen() && lastOpenedPopup !== popup) {
-    lastOpenedPopup.remove(); // Close the currently open popup if it's not the same as the new one
-  }
-  if (!popup.isOpen()) {
-    popup.addTo(map);
-    map.flyTo({ center: marker.getLngLat(), zoom: 14 });
-  }
-  lastOpenedPopup = popup; // Update the last opened popup reference
-}
-
 function mapPins(items) {
   try {
     items = JSON.parse(items);
@@ -41,6 +30,17 @@ function mapPins(items) {
       managePopup(popup, marker);
     });
   });
+}
+
+function managePopup(popup, marker) {
+  if (lastOpenedPopup && lastOpenedPopup.isOpen() && lastOpenedPopup !== popup) {
+    lastOpenedPopup.remove(); // Close the currently open popup if it's not the same as the new one
+  }
+  if (!popup.isOpen()) {
+    popup.addTo(map);
+    map.flyTo({ center: marker.getLngLat(), zoom: 14 });
+  }
+  lastOpenedPopup = popup; // Update the last opened popup reference
 }
 
 const itemsContainer = document.getElementById('items');
