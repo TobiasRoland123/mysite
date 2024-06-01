@@ -1200,7 +1200,12 @@ def _(image_url):
 
 
         if item['item_owner_fk'] == user['user_pk']:
-            path = Path(f"images/{image_url}")
+            try:
+                import production #type: ignore
+                path = f"mysite/images/{image_url}"
+            except:
+                print("No production path will be local")
+                path = f"images/{image_url}"
 
             print("#############  path #########################")
             print(path)
@@ -1276,6 +1281,10 @@ def _(item_pk):
             else:
                 print("Image file not found.")
         
+
+        last_value = request.url.split("/")[-1]  
+
+       
         
         return """
             <template mix-redirect="/profile">
@@ -1445,6 +1454,7 @@ def _(user_id):
 
 try:
     import production
+
 
     application = default_app()
 except:
