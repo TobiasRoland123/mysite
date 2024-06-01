@@ -994,6 +994,9 @@ def _():
     try:
 
         user = x.validate_user_logged()
+        
+        if user['user_role'] != 'partner':
+            raise Exception("User dont have rights to create property", 403)
 
         item_pk = uuid.uuid4().hex
         item_name = x.validate_item_name()
@@ -1135,7 +1138,7 @@ def _(item_pk):
                 filename = f"{item_pk}_{uuid.uuid4().hex}.{image.filename.split('.')[-1]}"
                 image_pk = uuid.uuid4().hex
                 try:
-                    import production
+                    import production #type: ignore
                     path = f"mysite/images/{filename}"
                 except:
                     print("No production path will be local")
