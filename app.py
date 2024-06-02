@@ -486,19 +486,6 @@ def _():
 
 
 ##############################
-@get("/all-users")
-def _():
-    try:
-
-        db = x.db()  # Replace x.db with the actual function or method that returns a database connection object
-        users = db.execute("SELECT * FROM users").fetchall()
-        return template("all_users.html", users=users)
-    except Exception as ex:
-        print(ex)
-
-
-
-##############################
 @delete("/delete-all-but-admin")
 def _():
     try:
