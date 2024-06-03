@@ -9,7 +9,7 @@ function mapPins(items) {
     return;
   }
 
-  console.log('Items:', items);
+  // console.log('Items:', items);
 
   items.forEach((item) => {
     const popup = new mapboxgl.Popup({ offset: 40 }).setHTML(
