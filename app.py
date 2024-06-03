@@ -240,7 +240,9 @@ def _():
     try:
        item_id = request.forms.get("item_id", "").strip() 
        user = x.validate_user_logged()
-       x.validate_user_has_rights_by_item_pk(user, item_id)
+    #    x.validate_user_has_rights_by_item_pk(user, item_id)
+       if user['user_role'] != "admin":
+           raise Exception('user dont have right to block', 403)
        item_blocked_at = int(time.time())
 
        db = x.db()
@@ -280,7 +282,9 @@ def _():
     try:
        item_id = request.forms.get("item_id", "").strip() 
        user = x.validate_user_logged()
-       x.validate_user_has_rights_by_item_pk(user, item_id)
+    #    x.validate_user_has_rights_by_item_pk(user, item_id)
+       if user['user_role'] != "admin":
+           raise Exception('user dont have right to block', 403)
        item_blocked_at = 0
 
        db = x.db()
@@ -376,7 +380,7 @@ def _():
         </template>
         """
     except Exception as ex:
-        pass
+        print(ex)
     finally:
         if "db" in locals(): db.close()
 
@@ -414,7 +418,7 @@ def _():
         </template>
         """
     except Exception as ex:
-        pass
+        print(ex)
     finally:
         if "db" in locals(): db.close()
 
@@ -450,7 +454,7 @@ def _():
         </template>
         """
     except Exception as ex:
-        pass
+        print(ex)
     finally:
         if "db" in locals(): db.close()
 
@@ -479,20 +483,6 @@ def _():
         return template("signup.html")
     except Exception as ex:
         print(f"########## {ex} ***************")
-
-
-##############################
-@delete("/delete-all-but-admin")
-def _():
-    try:
-        db = x.db()
-        q = db.execute("DELETE FROM users WHERE user_username != 'johndoe'")
-        db.commit()
-        return "x"
-    except Exception as ex:
-        print(ex)
-    finally:
-        if "db" in locals: db.close
 
 
 
@@ -1160,7 +1150,7 @@ def _(image_url):
     try:
         user= x.validate_user_logged()
         db = x.db()
-
+        
         try:
             image_row = db.execute("SELECT * FROM items_images WHERE image_url = ?", (image_url,)).fetchone()
             if image_row is None:
@@ -1225,7 +1215,7 @@ def _(item_pk):
         user = x.validate_user_logged()
         x.validate_user_has_rights_by_item_pk(user, item_pk)
 
-        print("item_pk", item_pk)
+
         db = x.db()
         query_image_row= db.execute("SELECT * FROM items_images WHERE item_fk = ?" , (item_pk,))
         image_rows = query_image_row.fetchall()
