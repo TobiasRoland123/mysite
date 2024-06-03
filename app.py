@@ -10,12 +10,16 @@ import time
 import random
 from pathlib import Path
 
-
+from routes import maketest
 
 ##############################
 @get("/app.css")
 def _():
     return static_file("app.css", ".")
+
+@get("/mycss.css")
+def _():
+    return static_file("mycss.css", ".")
 
 
 ##############################
