@@ -58,18 +58,18 @@
             <input name="item_id" type="text" value="{{item['item_pk']}}" class="hidden">
 
             % if item['item_blocked_at'] == 0:
-            <button class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition" mix-data="[id='{{item['item_pk']}}']" mix-post="/toogle_item_block">
+            <button class="bg-red-400 text-white px-4 py-2 rounded-md hover:bg-red-600 transition" mix-data="[id='{{item['item_pk']}}']" mix-post="/toogle_item_block">
                 Block
             </button>
             % else:
-            <button class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition" mix-data="[id='{{item['item_pk']}}']" mix-post="/toogle_item_unblock">
+            <button class="bg-green-400 text-white px-4 py-2 rounded-md hover:bg-green-600 transition" mix-data="[id='{{item['item_pk']}}']" mix-post="/toogle_item_unblock">
                 Unblock
             </button>
             % end
         </form>
 
         % else:
-        <button class="mb-2 open-dialog-btn bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition" data-dialog-id="dialog-{{item['item_pk'] }}">
+        <button class="mb-2 open-dialog-btn bg-blue-400 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition" data-dialog-id="dialog-{{item['item_pk'] }}">
             Edit details
         </button>
         % end
@@ -97,18 +97,18 @@
                 % for image_url in item['item_images']:
                 <div id="{{image_url}}" class="relative">
                     <form id="delete_item_{{item['item_pk']}}">
-                        <button class="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 !w-12 hover:bg-red-600 transition" mix-data="#delete_item_{{item['item_pk']}}" mix-delete="/delete_image/{{image_url}}">x</button>
+                        <button class="absolute top-2 right-2 bg-red-400 text-white rounded-full p-1 !w-12 hover:bg-red-600 transition" mix-data="#delete_item_{{item['item_pk']}}" mix-delete="/delete_image/{{image_url}}">x</button>
                     </form>
                     <img src="/images/{{image_url}}" alt="Image" class="w-32 h-32 object-cover rounded-lg">
                 </div>
                 % end
             </div>
 
-            <button mix-data="[id='{{item['item_pk']}}']" mix-put="/edit_item/{{item['item_pk']}}" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition">
+            <button mix-data="[id='{{item['item_pk']}}']" mix-put="/edit_item/{{item['item_pk']}}" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition">
                 Save
             </button>
         </form>
-        <button mix-data="[id='{{item['item_pk']}}']" mix-delete="/delete_item/{{item['item_pk']}}" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition mt-2">
+        <button mix-data="[id='{{item['item_pk']}}']" mix-delete="/delete_item/{{item['item_pk']}}" class="bg-red-400 text-white px-4 py-2 rounded-md hover:bg-red-600 transition mt-2">
             Delete property
         </button>
 
@@ -126,7 +126,7 @@
             Book
         </button>
         % else:
-        <button class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition" mix-data="[id='{{item['item_pk']}}']" mix-post="/toogle_item_unbook">
+        <button class="bg-red-400 text-white px-4 py-2 rounded-md hover:bg-red-600 transition" mix-data="[id='{{item['item_pk']}}']" mix-post="/toogle_item_unbook">
             Unbook
         </button>
         % end
