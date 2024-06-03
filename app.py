@@ -967,7 +967,7 @@ def _():
         item_name = x.validate_item_name()
         item_lat = random.uniform(55.615, 55.727)
         item_lon = random.uniform(12.451, 12.650)
-        item_stars = 5
+        item_stars = round(random.uniform(1, 5), 1)
         item_price_per_night  = x.validate_item_price()
         item_created_at = int(time.time())
         item_updated_at = 0
@@ -1105,6 +1105,7 @@ def _(item_pk):
                 try:
                     import production #type: ignore
                     path = f"mysite/images/{filename}"
+
                 except:
                     print("No production path will be local")
                     path = f"images/{filename}"
