@@ -1150,7 +1150,7 @@ def _(image_url):
     try:
         user= x.validate_user_logged()
         db = x.db()
-        
+    
         try:
             image_row = db.execute("SELECT * FROM items_images WHERE image_url = ?", (image_url,)).fetchone()
             if image_row is None:
