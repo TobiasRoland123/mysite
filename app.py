@@ -62,11 +62,6 @@ def _():
 
 
         items = x.group_images(rows)
-
-
-        print("**************** outcomming items: ")
-        print(items)
-
         # q_images = db.execute("SELECT * FROM items_images ORDER BY image_created_at ")
         # images = q_images.fetchall()
         
@@ -321,11 +316,12 @@ def _():
        if user['user_role'] != 'customer':
             raise Exception("Only customers can book properties", 403)
        item_booked_at = int(time.time())
-
-       db = x.db()
-       q = db.execute("UPDATE items SET item_booked_at = ? WHERE item_pk = ?",(item_booked_at, item_id))
-       db.commit()
-
+       try: 
+            db = x.db()
+            q = db.execute("UPDATE items SET item_booked_at = ? WHERE item_pk = ?",(item_booked_at, item_id))
+            db.commit()
+       except:
+           print(Exception) 
        x.send_item_blocked_unblocked_email("samueltobiasrolanduyet@gmail.com", item_id)# TODO: make this into a confirm booking mail
 
        return f"""
@@ -345,7 +341,7 @@ def _():
         </template>
         """
     except Exception as ex:
-        pass
+        print(ex)
     finally:
         if "db" in locals(): db.close()
 
@@ -915,15 +911,7 @@ def _():
         db = x.db()
         q = db.execute("SELECT * FROM users WHERE user_email = ? LIMIT 1", (user['user_email'],))
         logged_user = q.fetchone()
-        
-
-
-        
-        print(f"######################## user_password: {user_password}")
-        print(f"######################## logged_user_password: {logged_user['user_password']}")
-
-        
-
+      
         try:
             if not  bcrypt.checkpw(user_password.encode(), logged_user["user_password"].encode()): raise Exception("Invalid credentials", 400)
         except Exception as ex:
@@ -1189,10 +1177,10 @@ def _(image_url):
         if item['item_owner_fk'] == user['user_pk']:
             try:
                 import production #type: ignore
-                path = f"mysite/images/{image_url}"
+                path = Path(f"mysite/images/{image_url}")
             except:
                 print("No production path will be local")
-                path = f"images/{image_url}"
+                path = Path(f"images/{image_url}")
 
             print("#############  path #########################")
             print(path)
