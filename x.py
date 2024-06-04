@@ -253,7 +253,7 @@ def send_user_deleted_email(from_email, to_email):
                             name="viewport"
                             content="width=device-width, initial-scale=1.0"
                             />
-                            <title>Reset Password</title>
+                            <title>User deleted</title>
                         </head>
                         <body>
                             <h1>Your Account has been deleted</h1>
@@ -321,7 +321,7 @@ def send_item_blocked_unblocked_email(from_email, item_pk):
                             name="viewport"
                             content="width=device-width, initial-scale=1.0"
                             />
-                            <title>Verification Email</title>
+                            <title>Your property has been blocked</title>
                         </head>
                         <body>
                             <h1>Your property {item['item_name']} has been blocked by an admin</h1>
@@ -342,7 +342,7 @@ def send_item_blocked_unblocked_email(from_email, item_pk):
                             name="viewport"
                             content="width=device-width, initial-scale=1.0"
                             />
-                            <title>Verification Email</title>
+                            <title>Your property has been unblocked</title>
                         </head>
                         <body>
                             <h1>Your property {item['item_name']} has been unblocked by an admin</h1>
@@ -416,10 +416,10 @@ def send_user_blocked_unblocked_email(from_email, user_pk):
                             name="viewport"
                             content="width=device-width, initial-scale=1.0"
                             />
-                            <title>Verification Email</title>
+                            <title>Admin blocked your account</title>
                         </head>
                         <body>
-                            <h1>Your property {user['user_first_name']} has been blocked by an admin</h1>
+                            <h1>Your account {user['user_first_name']} has been blocked by an admin</h1>
                             <p>Contact support to get more information about the situation</p>
 
                         </body>
@@ -437,10 +437,10 @@ def send_user_blocked_unblocked_email(from_email, user_pk):
                             name="viewport"
                             content="width=device-width, initial-scale=1.0"
                             />
-                            <title>Verification Email</title>
+                            <title>Admin unblocked your account</title>
                         </head>
                         <body>
-                            <h1>Your property {user['user_first_name']} has been unblocked by an admin</h1>
+                            <h1>Your account {user['user_first_name']} has been unblocked by an admin</h1>
                             <p>Go to your profile page to see your property</p>
 
                         </body>
