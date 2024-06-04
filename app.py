@@ -10,7 +10,6 @@ import time
 import random
 from pathlib import Path
 
-from routes import maketest
 
 ##############################
 @get("/app.css")
